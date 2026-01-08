@@ -5,9 +5,11 @@
 # Note: This will create a ./release/dev/dev/pull-extlib
 package-as: dev/pull-extlib
 # --------------------------
+manual-changelog: CHANGELOG.md
 
+# basepath is ${package-as}
 externals:
-  Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
+  ThirdParty-Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
 
 ignore:
   - "dev"
@@ -15,8 +17,8 @@ ignore:
   - "*.yaml"
   - "*.toc"
   - LibPrettyPrint
-  - Libs/LibStub/tests
+  - ThirdParty-Libs/LibStub/tests
 
 # Base path is .release/
-#move-folders:
-#  dev/pull-extlib/Libs: ../Tmp/ThirdParty/Libs
+move-folders:
+  dev/pull-extlib/ThirdParty-Libs: ../LibPrettyPrint/ThirdParty/Libs
