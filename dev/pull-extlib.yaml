@@ -1,0 +1,22 @@
+# This is used for development to pull external libraries.
+# @see also: ./dev/pull-extlib.sh
+# --------------------------
+# package-as must match: ./release.sh -m dev/pull-extlib
+# Note: This will create a ./release/dev/dev/pull-extlib
+package-as: dev/pull-extlib
+# --------------------------
+
+externals:
+  Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
+
+ignore:
+  - "dev"
+  - "*.md"
+  - "*.yaml"
+  - "*.toc"
+  - LibPrettyPrint
+  - Libs/LibStub/tests
+
+# Base path is .release/
+#move-folders:
+#  dev/pull-extlib/Libs: ../Tmp/ThirdParty/Libs
