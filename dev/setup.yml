@@ -1,15 +1,15 @@
 # This is used for development to pull external libraries.
 # @see also: ./dev/pull-extlib.sh
 # --------------------------
-# package-as must match: ./release.sh -m dev/pull-extlib
-# Note: This will create a ./release/dev/dev/pull-extlib
+# cmd: ./dev/release.sh -duz -r ./.release -m _setup.yml
+# Note: This will build in ./.release/_setup directory
 package-as: _setup
 # --------------------------
 manual-changelog: CHANGELOG.md
 
+# Use github because svn repos are slower
 # basepath is ${package-as}
 externals:
-  #ThirdParty-Libs/LibStub: https://repos.wowace.com/wow/libstub
   ThirdParty-Libs/LibStub: https://github.com/lua-wow/LibStub
 
 ignore:
