@@ -1,4 +1,4 @@
 ## Interface: 100002
-## Title: pull-extlib
+## Title: Developer Setup/Bootstrap
 ## Author: kapresoft@gmail.com
 

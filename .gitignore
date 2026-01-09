@@ -39,5 +39,9 @@ luac.out
 *.x86_64
 *.hex
 
+# Build Dirs
+.release
+.setup
+
 # External Lib Dir
 LibPrettyPrint/ThirdParty/Libs
