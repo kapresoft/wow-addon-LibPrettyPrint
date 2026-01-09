@@ -4,7 +4,7 @@ local _, ns   = ...
 local LibStub = LibStub
 
 --- @type LibPrettyPrint_PrettyPrint
-local LIB     = LibStub('LibPrettyPrint-1.0'); if not LIB then return end
+local LIB = LibStub('LibPrettyPrint-1.0'); if not LIB then return end
 
 --- @class LibPrettyPrint_PrettyPrintWrapper
 local pformatWrapper = { pprint = LIB.pprint }

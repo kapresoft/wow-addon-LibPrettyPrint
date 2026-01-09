@@ -537,12 +537,17 @@ addon, ns = ...
 local pprint = pprint
 
 --- @type LibStub
-local LibStub = LibStub
-local MAJOR_VERSION = 'LibPrettyPrint-1.0'
-local MINOR_VERSION = 1
+local LibStub      = LibStub
+local MAJOR, MINOR = 'LibPrettyPrint-1.0', 1
 
 --- @class LibPrettyPrint_PrettyPrint
 --- @field private pprint LibPrettyPrint_pprint
-local L = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION); if not L then return end
+local L = LibStub:NewLibrary(MAJOR, MINOR); if not L then return end
+
+C_Timer.After(1, function()
+    print(('[00:00:00] {{%s}}: xxx loaded...'):format(addon))
+end)
+
+if not L then return end
 L.pprint = pprint
 

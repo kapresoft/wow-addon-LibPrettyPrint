@@ -2,7 +2,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
-	<Include file="LibPrettyPrint.lua"></Include>
-	<Include file="LibPrettyPrint_PrintWrapper.lua"></Include>
+	<Include file="ThirdParty\ThirdParty.xml"></Include>
+	<Script file="LibPrettyPrint.lua"/>
+	<Script file="LibPrettyPrint_PrintWrapper.lua"/>
 
 </Ui>
