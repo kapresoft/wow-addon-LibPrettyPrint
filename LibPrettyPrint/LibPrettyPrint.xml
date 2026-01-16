@@ -3,7 +3,10 @@
 ..\FrameXML\UI.xsd">
 
 	<Include file="ThirdParty\ThirdParty.xml"></Include>
+	<Script file="Namespace.lua"/>
+	<Script file="pprint.lua"/>
+	<Script file="Formatter.lua"/>
+	<Script file="Printer.lua"/>
 	<Script file="LibPrettyPrint.lua"/>
-	<Script file="LibPrettyPrint_PrintWrapper.lua"/>
 
 </Ui>
