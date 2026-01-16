@@ -168,17 +168,20 @@ if not S then return end; ns:register(ns.M.Printer, S)
 --- @type LibPrettyPrint_Printer
 local o = S
 
---- @type LibPrettyPrint_FormatterConfig
+--- @type LibPrettyPrint_PrinterConfig
 local DEFAULT_CONFIG = { use_newline = false, show_all = true }
 
----@param config LibPrettyPrint_FormatterConfig|nil
-function o:New(config)
-    --- @type LibPrettyPrint_FormatterConfig
-    local _config = config or DEFAULT_CONFIG
-    local fmt = ns.O.Formatter:New(_config)
+--- @param printerConfig LibPrettyPrint_PrinterConfig|nil @Optional printer config
+--- @param formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
+function o:New(printerConfig, formatter)
+    local _config    = printerConfig or DEFAULT_CONFIG
+    local _formatter = formatter or ns.O.Formatter:New()
     --DEVTOOLS_DEPTH_CUTOFF = 2
     --return NewDumpPrinter(ns.name, ns.M.Printer, fmt)
-    return NewPrinter(ns.name, ns.M.Printer, fmt)
+    if not _config.use_dump_tool then
+        return NewPrinter(ns.name, ns.M.Printer, _formatter)
+    end
+    return NewDumpPrinter(ns.name, ns.M.Printer, _formatter)
 end
 
 local function log(e)

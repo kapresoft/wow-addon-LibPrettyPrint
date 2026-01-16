@@ -18,14 +18,13 @@ local o = S
 Methods
 -------------------------------------------------------------------------------]]
 --- @param printerConfig LibPrettyPrint_PrinterConfig|nil @Optional
---- @param formatterConfig LibPrettyPrint_Formatter|nil @Optional
-function o:Printer(printerConfig, formatterConfig)
-    return ns.O.Printer:New(printerConfig, formatterConfig)
+function o:Printer(printerConfig)
+    local f = self:Formatter(printerConfig.formatterConfig)
+    return ns.O.Printer:New(printerConfig, f)
 end
 
 --- @param formatterConfig LibPrettyPrint_FormatterConfig|nil
 function o:Formatter(formatterConfig)
-    return ns.O.Formatter:New({ depth_limit = 1 })
+    print('xx formatterConfig:', ns.O.pprint.pformat(formatterConfig))
+    return ns.O.Formatter:New(formatterConfig)
 end
-
-

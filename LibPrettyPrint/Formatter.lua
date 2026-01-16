@@ -17,8 +17,10 @@ Type Def
 --- @field show_metatable boolean     @Show metatable.                                           default=false
 
 --- @class LibPrettyPrint_PrinterConfig
---- @field use_dumptool boolean       @Use Blizzard's Dump Tool for printing
-
+--- @field prefix string The main prefix in {{ PREFIX::SUBPREFIX }} : <Message>
+--- @field sub_prefix string The sub-prefix {{ PREFIX::SUBPREFIX }} : <Message>
+--- @field use_dump_tool boolean @Use Blizzard's Dump Tool for printing
+--- @field formatterConfig LibPrettyPrint_FormatterConfig @Optional formatter config
 
 --[[-----------------------------------------------------------------------------
 Library: LibPrettyPrint
@@ -70,6 +72,7 @@ local pprint = o.pprint
 --- @param config LibPrettyPrint_FormatterConfig|nil Optional per-instance config; merged with library defaults at format time
 --- @return LibPrettyPrint_Formatter
 function o:New(config)
+    print('xx config:', pprint.pformat(config))
     local obj = CreateAndInitFromMixin(o, config)
     return setmetatable(obj, o.mt)
 end
