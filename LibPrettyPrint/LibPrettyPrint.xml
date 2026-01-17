@@ -3,16 +3,5 @@
 ..\FrameXML\UI.xsd">
 
 	<Include file="ThirdParty\ThirdParty.xml"></Include>
-	<Script file="Namespace.lua"/>
-	<!--@do-not-package@-->
-	<Include file='Developer\_DeveloperSetup.xml'/>
-	<!--@end-do-not-package@-->
-	<Script file="pprint.lua"/>
-	<Script file="Formatter.lua"/>
-	<Script file="Printer.lua"/>
-	<Script file="LibPrettyPrint.lua"/>
-	<!--@do-not-package@-->
-	<Include file='Developer\_Developer.xml'/>
-	<!--@end-do-not-package@-->
-
+	<Include file="Libs\_Libs.xml"></Include>
 </Ui>

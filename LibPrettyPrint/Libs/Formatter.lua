@@ -72,7 +72,7 @@ local pprint = o.pprint
 --- @param config LibPrettyPrint_FormatterConfig|nil Optional per-instance config; merged with library defaults at format time
 --- @return LibPrettyPrint_Formatter
 function o:New(config)
-    print('xx config:', pprint.pformat(config))
+    --print('xx config:', pprint.pformat(config))
     local obj = CreateAndInitFromMixin(o, config)
     return setmetatable(obj, o.mt)
 end

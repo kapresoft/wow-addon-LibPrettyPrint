@@ -1,0 +1,2 @@
+--- @alias LibPrettyPrint_PrintFn fun(...: any) : void Printer function that accepts any values and outputs formatted text; behaves like print
+--- @alias LibPrettyPrint_PredicateFn fun() : boolean Function that evaluates a condition and returns true or false
