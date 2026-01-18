@@ -1,3 +1,6 @@
+--- @type LibPrettyPrint_Namespace
+local ns = select(2, ...)
+
 --- Source: https://github.com/jagt/pprint.lua
 --- License: Public Domain (see LICENSE.txt)
 --- Usage
@@ -47,44 +50,43 @@ local pprint = { VERSION = '0.1' }
 local depth = 1
 
 --- The following was modified for LibPrettyPrint
-pprint.defaults = {
+--- @class PPrint_Options
+local defaults = {
     -- If set to number N, then limit table recursion to N deep.
     depth_limit = 1,
     -- type display trigger, hide not useful datatypes by default
     -- custom types are treated as table
-    show_nil        = true,
-    show_boolean    = true,
-    show_number     = true,
-    show_string     = true,
-    show_table      = true,
-    show_function   = true,
-    show_thread     = false,
-    show_userdata   = false,
+    show_nil          = true,
+    show_boolean      = true,
+    show_number       = true,
+    show_string       = true,
+    show_table        = true,
+    show_function     = true,
+    show_thread       = false,
+    show_userdata     = false,
     -- additional display trigger
-    show_metatable  = false, -- show metatable
-    show_all        = false, -- override other show settings and show everything
-    use_tostring    = false, -- use __tostring to print table if available
-    filter_function = nil, -- called like callback(value[,key, parent]), return truty value to hide
-    object_cache    = 'local', -- cache blob and table to give it a id, 'local' cache per print, 'global' cache
+    show_metatable    = false,   -- show metatable
+    show_all          = false,   -- override other show settings and show everything
+    use_tostring      = false,   -- use __tostring to print table if available
+    filter_function   = nil,     -- called like callback(value[,key, parent]), return truty value to hide
+    object_cache      = 'local', -- cache blob and table to give it a id, 'local' cache per print, 'global' cache
     -- per process, falsy value to disable (might cause infinite loop)
     -- format settings
-    indent_size = 2,            -- indent for each nested table level
-    level_width = 80,           -- max width per indent level
-    wrap_string = false,         -- wrap string when it's longer than level_width
-    wrap_array = false,         -- wrap every array elements
-    sort_keys = true,           -- sort table keys
+    indent_size       = 2,       -- indent for each nested table level
+    level_width       = 80,      -- max width per indent level
+    wrap_string       = false,   -- wrap string when it's longer than level_width
+    wrap_array        = false,   -- wrap every array elements
+    sort_keys         = true,    -- sort table keys
 
-    -- custom
-    use_newline = false,
+    -- my custom addition
+    multiline_tables  = false,   -- add newlines when formatting tables
 
-    --- @param k any
-    --- @return function(key:string) : string The color formatted key
-    table_key_formatter_function = function(k)
-        local c = CreateColorFromRGBHexString('88ccff')
-        return c.WrapTextInColorCode(c, k)
-    end
+    table_key_color   = 'FF6661',
+    table_ref_color   = '88FF88',
+    table_cutoff_color= 'ff0000',
 
-}
+}; pprint.defaults = defaults
+
 
 local TYPES = {
     ['nil'] = 1, ['boolean'] = 2, ['number'] = 3, ['string'] = 4,
@@ -235,8 +237,12 @@ function pprint.setup(option)
 end
 
 -- format lua object into a string
+--- @param option PPrint_Options
 function pprint.pformat(obj, option, printer)
     option = make_option(option)
+    local tblKC = ns:colorFn(option.table_key_color)
+    local tblRC = ns:colorFn(option.table_ref_color)
+    local tblCC = ns:colorFn(option.table_cutoff_color)
     local buf = {}
     local function default_printer(s)
         table.insert(buf, s)
@@ -269,7 +275,7 @@ function pprint.pformat(obj, option, printer)
     end
 
     local function _n(d)
-        if false == option.use_newline then
+        if false == option.multiline_tables then
             wrapped_printer('')
             status.indent = ' '
         else
@@ -331,7 +337,7 @@ function pprint.pformat(obj, option, printer)
     end
 
     local function function_formatter(fn)
-        return ("<%s>"):format(tostring(fn))
+        return tblRC(("<%s>"):format(tostring(fn)))
     end
 
     local function string_formatter(s, force_long_quote)
@@ -387,7 +393,7 @@ function pprint.pformat(obj, option, printer)
         local limit = tonumber(option.depth_limit)
         if limit and depth > limit then
             if print_header_ix then
-                return string.format('[[%s too deep %d]]...', ttype, print_header_ix)
+                return tblCC(string.format('[[%s too deep %d]]...', ttype, print_header_ix))
             end
             return string_formatter(tostring(t), true)
         end
@@ -435,13 +441,13 @@ function pprint.pformat(obj, option, printer)
                 return
             end
             wrapped = _n()
-            local kcf = option.table_key_formatter_function
+
             if is_plain_key(k) then
-                _p(kcf(k), true)
+                _p(tblKC(k), true)
             else
                 _p('[')
                 -- [[]] type string in key is illegal, needs to add spaces in between
-                local k = kcf(format(k))
+                local k = tblKC(format(k))
                 if string.match(k, '%[%[') then
                     _p(' '..k..' ', true)
                 else
@@ -540,31 +546,6 @@ setmetatable(pprint, {
 })
 
 --[[-----------------------------------------------------------------------------
-Place modifications to original after this line.
+Register
 -------------------------------------------------------------------------------]]
---- @type --- @type LibPrettyPrint_Namespace
-local ns = select(2, ...)
 ns:register(ns.M.pprint, pprint)
-
---[[
---- @type LibPrettyPrint_pprint
-local pprint = pprint
-
---- @type LibStub
-local LibStub      = LibStub
-local MAJOR, MINOR = 'LibPrettyPrint-1.0', 1
-
---- @class LibPrettyPrint_PrettyPrint
---- @field private pprint LibPrettyPrint_pprint
-local L = LibStub:NewLibrary(MAJOR, MINOR); if not L then return end
-if not L then return end
-L.pprint = pprint
-]]
---[[-----------------------------------------------------------------------------
-Public
--------------------------------------------------------------------------------]]--[[
-
-LibPrettyPrint = L
-
-]]
-

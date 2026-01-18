@@ -2,26 +2,14 @@
 local ns           = select(2, ...)
 --- @type LibStub
 local LibStub      = LibStub
+
 --[[-----------------------------------------------------------------------------
-Type Def
+Local Vars
 -------------------------------------------------------------------------------]]
---- @class LibPrettyPrint_FormatterConfig
---- @field use_newline boolean        @Use newlines for each element.                            default=false
---- @field show_function boolean      @Limit show functions.                                     default=true
---- @field depth_limit boolean|number @If set to number N, then limit table recursion to N deep. default=1
---- @field wrap_string boolean        @Wrap string when it's longer than level_width.            default= true
---- @field indent_size number         @Indent size when using newlines.                          default=2
---- @field sort_keys boolean          @Sort table keys.                                          default=true
---- @field show_all boolean           @Show all value types.                                     default=false
---- @field level_width number         @Max line width before wrapping.                           default=80
---- @field show_metatable boolean     @Show metatable.                                           default=false
-
---- @class LibPrettyPrint_PrinterConfig
---- @field prefix string The main prefix in {{ PREFIX::SUBPREFIX }} : <Message>
---- @field sub_prefix string The sub-prefix {{ PREFIX::SUBPREFIX }} : <Message>
---- @field use_dump_tool boolean @Use Blizzard's Dump Tool for printing
---- @field formatterConfig LibPrettyPrint_FormatterConfig @Optional formatter config
-
+--- @type LibPrettyPrint_FormatterConfig
+local DEFAULT_CONFIG = {
+    multiline_tables = false, show_all = true, depth_limit = 3
+}
 --[[-----------------------------------------------------------------------------
 Library: LibPrettyPrint
 -------------------------------------------------------------------------------]]
@@ -40,15 +28,20 @@ local o  = S;
 o.pprint = ns.O.pprint
 o.mt = { __call = function(self, ...) return self:format(...) end }
 
---- Note: Indent only matters if use_newline = true; otherwise set indent_size to 1
+--- Note: Indent only matters if multiline_tables = true; otherwise set indent_size to 1
 local pprint = o.pprint
+
+--[[-----------------------------------------------------------------------------
+Support Functions
+-------------------------------------------------------------------------------]]
+local function a() return ns.LibPrettyPrint end
 
 --- @default
 --- Create a new formatter with default configuration.
 ---
 --- Default Configuration is:
 --- local defaultConfig = {
----    use_newline = true,
+---    multiline_tables = true,
 ---    wrap_string = true,
 ---    level_width = 80,
 ---    sort_keys   = true,
@@ -72,8 +65,7 @@ local pprint = o.pprint
 --- @param config LibPrettyPrint_FormatterConfig|nil Optional per-instance config; merged with library defaults at format time
 --- @return LibPrettyPrint_Formatter
 function o:New(config)
-    --print('xx config:', pprint.pformat(config))
-    local obj = CreateAndInitFromMixin(o, config)
+    local obj = CreateAndInitFromMixin(o, config or DEFAULT_CONFIG)
     return setmetatable(obj, o.mt)
 end
 
@@ -91,14 +83,14 @@ function o:Init(config) self.config = config end
 --- ```
 --- ### Similar behavior to calling:
 --- ```
---- local fmt = LibPrettyPrint_Formatter:New({ use_newline = false })
+--- local fmt = LibPrettyPrint_Formatter:New({ multiline_tables = false })
 --- print('Val:', fmt(val))
 --- ```
 --- @public
 --- @return LibPrettyPrint_Formatter
 function o:Compact()
-    local config = CopyTable(self.config or {}, true)
-    config.use_newline = false
+    local config = a().CopyTable(self.config or {}, true)
+    config.multiline_tables = false
     return self:New(config)
 end
 
@@ -134,8 +126,4 @@ function o.dumpv(any)
     table.insert(tmp, any)
     DevTools_Dump(tmp)
 end
-
---fmt = o:New()
---fmr = o:New({ use_newline = false })
---print('xxx fmr:', fmr({}))
 
