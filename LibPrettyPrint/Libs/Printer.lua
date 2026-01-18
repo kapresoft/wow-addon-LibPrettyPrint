@@ -44,8 +44,7 @@ Methods:Printer
 --- @return LibPrettyPrint_Printer
 function o:New(config, formatter)
 
-  -- todo include_timestamp option
-  -- todo next: colors
+  -- todo next: include_timestamp option
   -- todo next: predicateFn
 
   --- @type LibPrettyPrint_Printer
