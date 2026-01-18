@@ -33,6 +33,7 @@ Type Def
 --- @field sub_prefix string @The sub-prefix {{ PREFIX::SUBPREFIX }} : <Message>
 --- @field sub_prefix_color RGBHex|nil @Optional; see RGBHex
 --- @field use_dump_tool boolean @Use Blizzard's Dump Tool for printing
+--- @field show_timestamp boolean @Shows timestamp for every print; default=true
 --- @field formatter LibPrettyPrint_FormatterConfig @Optional formatter config
 
 

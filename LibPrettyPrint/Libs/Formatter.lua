@@ -89,7 +89,7 @@ function o:Init(config) self.config = config end
 --- @public
 --- @return LibPrettyPrint_Formatter
 function o:Compact()
-    local config = a().CopyTable(self.config or {}, true)
+    local config = ns:CopyTable(self.config or {}, true)
     config.multiline_tables = false
     return self:New(config)
 end

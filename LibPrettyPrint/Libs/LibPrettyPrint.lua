@@ -13,20 +13,6 @@ LibPrettyPrint = S; ns.LibPrettyPrint = S
 
 --- @type LibPrettyPrint
 local o = S
---[[-----------------------------------------------------------------------------
-Utility Functions
--------------------------------------------------------------------------------]]
-function o.CopyTable(settings, shallow)
-    local copy = {};
-    for k, v in pairs(settings) do
-        if type(v) == "table" and not shallow then
-            copy[k] = CopyTable(v);
-        else
-            copy[k] = v;
-        end
-    end
-    return copy;
-end
 
 --[[-----------------------------------------------------------------------------
 Methods
@@ -35,7 +21,12 @@ Methods
 --- @return LibPrettyPrint_Printer
 --- @param formatter LibPrettyPrint_Formatter
 function o:Printer(printerConfig, formatter)
-    local f = formatter or self:Formatter(printerConfig.formatter)
+    local f = self:Formatter()
+    if formatter then
+        f = formatter
+    elseif printerConfig and printerConfig.formatter then
+        f = self:Formatter(printerConfig.formatter)
+    end
     return ns.O.Printer:New(printerConfig, f)
 end
 

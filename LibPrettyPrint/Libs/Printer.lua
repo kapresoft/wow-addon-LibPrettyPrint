@@ -21,8 +21,10 @@ Local Vars
 local DEFAULT_CONFIG = {
   multiline_tables = false, show_all = true,
   prefix_color     = '3AFFFD',
-  sub_prefix_color = 'FFF57D'
+  sub_prefix_color = 'FFF57D',
+  show_timestamp   = true,
 }
+local DEFAULT_TAG = '>>'
 
 --[[-----------------------------------------------------------------------------
 Type: Printer
@@ -61,12 +63,23 @@ function o:New(config, formatter)
   return pr
 end
 
+--- @param config LibPrettyPrint_PrinterConfig|nil
+--- @return LibPrettyPrint_PrinterConfig
+local function InitConfig(config)
+  local c = config
+  if not c then
+    c = DEFAULT_CONFIG
+  else
+    ns:MergeConfig(c, DEFAULT_CONFIG) end
+  return c
+end
 
 --- @private
 --- @param config LibPrettyPrint_PrinterConfig|nil @Optional printer config
 --- @param formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
 function o:Init(config, formatter)
-  self.config    = config or DEFAULT_CONFIG
+  self.config = InitConfig(config)
+  --print('xx c:', pformat(self.config))
   self.formatter = formatter or ns.O.Formatter:New()
   self.metatable = { __call = function(self, ...) self.printFn(self.tag, ...) end }
 end
@@ -106,8 +119,10 @@ function o:NewPrintFn(predicateFn)
         args[i] = self.formatter(args[i])
       end
     end
-
-    _print("[" .. date("%H:%M:%S") .. "]", ns:SafeUnpack(args))
+    if self.config.show_timestamp then
+      return _print("[" .. date("%H:%M:%S") .. "]", ns:SafeUnpack(args))
+    end
+    return _print(ns:SafeUnpack(args))
   end
   return fn
 end
@@ -134,7 +149,12 @@ end
 --- @private
 --- @return string
 function o:CreatTag()
-  return sformat("{{%s}}:", self:CreateCombinedPrefix())
+  local prefix = self:CreateCombinedPrefix()
+  if not prefix then
+    local p_color = ns:colorFn(self.config.prefix_color)
+    return p_color(DEFAULT_TAG)
+  end
+  return sformat("{{%s}}", prefix)
 end
 
 --- Generates the combined prefix/sub_prefix resulting in one of:
@@ -146,18 +166,17 @@ end
 --- with no prefix, no suffix: nil
 --- ```
 --- @private
---- @return string The combined prefix separated with '::', example: 'MyAddOn::Module'
+--- @return string|nil The combined prefix separated with '::', example: 'MyAddOn::Module'
 function o:CreateCombinedPrefix()
   local c = self.config
 
-  local prefix_color = c.prefix_color or DEFAULT_CONFIG.prefix_color
-  local sub_prefix_color = c.sub_prefix_color or DEFAULT_CONFIG.sub_prefix_color
-  local p_color = ns:colorFn(prefix_color)
-  local s_color = ns:colorFn(sub_prefix_color)
+  local p_color = ns:colorFn(c.prefix_color)
+  local s_color = ns:colorFn(c.sub_prefix_color)
 
   local p = ns:str_trim(c.prefix) or ''
-  local s = ns:str_trim(c.sub_prefix) or ''
   if #p == 0 then return nil end
+
+  local s = ns:str_trim(c.sub_prefix) or ''
   if #s == 0 then return p_color(p) end
 
   return p_color(p) .. '::' .. s_color(s)

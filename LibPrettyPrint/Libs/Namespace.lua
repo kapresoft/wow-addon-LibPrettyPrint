@@ -73,6 +73,37 @@ end
 --- @return any, any, any, any
 function ns:SafeUnpack(tbl, startIndex) return unpack(tbl, startIndex or 1, tbl.n) end
 
+--- @param tbl table
+--- @param shallow boolean
+--- @return table The copied table
+function ns:CopyTable(tbl, shallow)
+    local copy = {};
+    for k, v in pairs(tbl) do
+        if type(v) == "table" and not shallow then
+            copy[k] = self:CopyTable(v);
+        else
+            copy[k] = v;
+        end
+    end
+    return copy;
+end
 
+--- Merges source into destination only if the key does not exist in destination.
+--- Modifies and returns destination.
+--- @param destination table
+--- @param source table
+--- @return table
+function ns:MergeConfig(destination, source)
+    for k, v in pairs(source) do
+        if destination[k] == nil then
+            if type(v) == "table" then
+                destination[k] = self:CopyTable(v, false)
+            else
+                destination[k] = v
+            end
+        end
+    end
+    return destination
+end
 
 LibPrettyPrint_Namespace = ns
