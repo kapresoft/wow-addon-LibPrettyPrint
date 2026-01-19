@@ -46,7 +46,6 @@ Methods:Printer
 --- @return LibPrettyPrint_Printer
 function o:New(config, formatter)
 
-  -- todo next: include_timestamp option
   -- todo next: predicateFn
 
   --- @type LibPrettyPrint_Printer
@@ -70,7 +69,7 @@ local function InitConfig(config)
   if not c then
     c = DEFAULT_CONFIG
   else
-    ns:MergeConfig(c, DEFAULT_CONFIG) end
+    ns:TableDefaults(c, DEFAULT_CONFIG) end
   return c
 end
 
@@ -79,7 +78,6 @@ end
 --- @param formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
 function o:Init(config, formatter)
   self.config = InitConfig(config)
-  --print('xx c:', pformat(self.config))
   self.formatter = formatter or ns.O.Formatter:New()
   self.metatable = { __call = function(self, ...) self.printFn(self.tag, ...) end }
 end

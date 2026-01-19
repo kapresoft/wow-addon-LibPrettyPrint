@@ -81,7 +81,7 @@ local defaults = {
     -- my custom addition
     multiline_tables  = false,   -- add newlines when formatting tables
 
-    table_key_color   = 'FF6661',
+    table_key_color   = '88CCFF',
     table_ref_color   = '88FF88',
     table_cutoff_color= 'ff0000',
 

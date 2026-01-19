@@ -88,12 +88,28 @@ function ns:CopyTable(tbl, shallow)
     return copy;
 end
 
---- Merges source into destination only if the key does not exist in destination.
+--- Merges source into destination; Overwrites existing fields.
 --- Modifies and returns destination.
 --- @param destination table
 --- @param source table
 --- @return table
-function ns:MergeConfig(destination, source)
+function ns:MergeTable(destination, source)
+    for k, v in pairs(source) do
+        if type(v) == "table" then
+            destination[k] = self:CopyTable(v, false)
+        else
+            destination[k] = v
+        end
+    end
+    return destination
+end
+
+--- Apply source into destination only if the key does not exist in destination.
+--- Modifies and returns destination.
+--- @param destination table
+--- @param source table
+--- @return table
+function ns:TableDefaults(destination, source)
     for k, v in pairs(source) do
         if destination[k] == nil then
             if type(v) == "table" then

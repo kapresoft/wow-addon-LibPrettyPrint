@@ -7,16 +7,18 @@
 Type Def
 -------------------------------------------------------------------------------]]
 --- @class LibPrettyPrint_FormatterConfig
---- @field multiline_tables boolean   @Add newlines to tables for each element.                            default=false
---- @field show_function boolean      @Limit show functions.                                     default=true
---- @field depth_limit boolean|number @If set to number N, then limit table recursion to N deep. default=1
---- @field wrap_string boolean        @Wrap string when it's longer than level_width.            default= true
---- @field indent_size number         @Indent size when using newlines.                          default=2
---- @field sort_keys boolean          @Sort table keys.                                          default=true
---- @field show_all boolean           @Show all value types.                                     default=false
---- @field level_width number         @Max line width before wrapping.                           default=80
---- @field show_metatable boolean     @Show metatable.                                           default=false
+--- @field multiline_tables boolean       @Add newlines to tables for each element.                            default=false
+--- @field show_function boolean          @Limit show functions.                                     default=true
+--- @field depth_limit boolean|number     @If set to number N, then limit table recursion to N deep. default=1
+--- @field wrap_string boolean            @Wrap string when it's longer than level_width.            default= true
+--- @field indent_size number             @Indent size when using newlines.                          default=2
+--- @field sort_keys boolean              @Sort table keys.                                          default=true
+--- @field show_all boolean               @Show all value types.                                     default=false
+--- @field level_width number             @Max line width before wrapping.                           default=80
+--- @field show_metatable boolean         @Show metatable.                                           default=false
 --- @field table_key_color RGBHex|nil     @Optional; see RGBHex
+--- @field table_ref_color RGBHex|nil     @Optional; see RGBHex
+--- @field table_cutoff_color RGBHex|nil  @Optional; see RGBHex
 
 --- @class LibPrettyPrint_PrinterColorDefs
 --- @field prefix string The 8-char hex string, i.e. ffEFEFEF

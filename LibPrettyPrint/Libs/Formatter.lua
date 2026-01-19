@@ -8,7 +8,7 @@ Local Vars
 -------------------------------------------------------------------------------]]
 --- @type LibPrettyPrint_FormatterConfig
 local DEFAULT_CONFIG = {
-    multiline_tables = false, show_all = true, depth_limit = 3
+    multiline_tables = false, show_all = true, depth_limit = 1,
 }
 --[[-----------------------------------------------------------------------------
 Library: LibPrettyPrint
@@ -73,7 +73,17 @@ end
 --- @param config LibPrettyPrint_FormatterConfig|nil
 function o:Init(config) self.config = config end
 
---- Format the given object using a compact (single-line) formatter.
+--- @protected
+--- @param configAdditive LibPrettyPrint_FormatterConfig
+--- @return LibPrettyPrint_Formatter
+function o:Derive(configAdditive)
+    assert(configAdditive, "The additive config is required.")
+    local config = ns:CopyTable(self.config or {})
+    if configAdditive then ns:MergeTable(config, configAdditive) end
+    return self:New(config)
+end
+
+--- Create a new formatter with compact option option
 --- ### Example
 --- ```
 --- local fmt = LibPrettyPrint_Formatter:New() -- use defaults
@@ -88,11 +98,12 @@ function o:Init(config) self.config = config end
 --- ```
 --- @public
 --- @return LibPrettyPrint_Formatter
-function o:Compact()
-    local config = ns:CopyTable(self.config or {}, true)
-    config.multiline_tables = false
-    return self:New(config)
-end
+function o:Compact() return self:Derive({ multiline_tables = false }) end
+
+--- Create a new formatter with multi-line option
+--- @public
+--- @return LibPrettyPrint_Formatter
+function o:MultiLine() return self:Derive({ multiline_tables = true }) end
 
 --- @alias
 --- @see LibPrettyPrint_PrettyPrintWrapper#A()

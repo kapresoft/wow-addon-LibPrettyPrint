@@ -5,24 +5,31 @@ local devst = DEV_SUITE
 --- @class Developer
 local o = {}; lpp_dev = o
 
-C_Timer.After(1, function()
-    print(('xxx %s::Developer loaded...'):format(addon))
-end)
-
 function o:clear()
     devst:BINDING_DEVS_CLEAR_DEBUG_CONSOLE()
     return devst and devst:BINDING_DEVS_CLEAR_DEBUG_CONSOLE()
 end
 
 local val = {
-    {
-        hello='world', level=12, helper=function() end,
-        handler = {
-            name = 'mouseEventHandler', callback= function()  end
-        },
-        values = {1, 2, 3}
-    }
+  hello   = 'world', level = 12, helper = function() end,
+  handler = {
+    name = 'mouseEventHandler', callback = function() end
+  },
+  values  = { 1, 2, 3 }
 }
+
+function o:test1()
+  --- @type LibPrettyPrint_FormatterConfig
+  local fc1 = { depth_limit = 1, }
+  --- @type LibPrettyPrint_FormatterConfig
+  local fc2 = { multiline_tables = true, depth_limit = 2,
+                table_ref_color = 'FFFC16',
+                table_key_color = 'FD62FF' }
+  local f1 = LibPrettyPrint:Formatter():New(fc1)
+  local f2 = LibPrettyPrint:Formatter():New(fc2)
+  local f3 = f2:Compact()
+  return f1, f2, f3, val
+end
 
 function o:test2()
     local lpp = LibPrettyPrint
@@ -37,7 +44,7 @@ function o:test2()
 end
 
 --- @return LibPrettyPrint_Formatter
-function o:formatterTest()
+function o:test3()
     local lpp = LibPrettyPrint
 
     --- @type LibPrettyPrint_FormatterConfig
