@@ -113,4 +113,12 @@ function ns:TableDefaults(destination, source)
     return destination
 end
 
+--- Checks whether value is an instance of class
+--- @param value any
+--- @param class table  @The class / metatable
+--- @return boolean
+function ns:IsType(value, class)
+    return type(value) == "table" and getmetatable(value) == class
+end
+
 LibPrettyPrint_Namespace = ns

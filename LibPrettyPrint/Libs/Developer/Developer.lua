@@ -1,14 +1,13 @@
-local addon, ns = ...
-local O, GC, M, LibStub = ns.O, ns.GC, ns.M, ns.LibStub
-local devst = DEV_SUITE
-local lpp = LibPrettyPrint
+--- @type LibPrettyPrint_Namespace
+local ns             = select(2, ...)
+local lpp, dev_suite = LibPrettyPrint, DEV_SUITE
 
 --- @class Developer
 local o = {}; lpp_dev = o
 
 function o:clear()
-    devst:BINDING_DEVS_CLEAR_DEBUG_CONSOLE()
-    return devst and devst:BINDING_DEVS_CLEAR_DEBUG_CONSOLE()
+    dev_suite:BINDING_DEVS_CLEAR_DEBUG_CONSOLE()
+    return dev_suite and dev_suite:BINDING_DEVS_CLEAR_DEBUG_CONSOLE()
 end
 
 local val = {
@@ -35,7 +34,8 @@ end
 
 function o:test2Single()
   local p  = lpp:Printer()
-  return p, val
+  print('xx isPrinterType:', ns:IsType(p, ns.O.Printer))
+  return p, val, ns.O.Printer
 end
 
 --- Printer Test

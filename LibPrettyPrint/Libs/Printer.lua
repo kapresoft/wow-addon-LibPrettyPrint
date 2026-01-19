@@ -38,7 +38,6 @@ S.__index = S
 S.__type = 'LibPrettyPrint_Printer'
 S.__call = function(self, ...) self.printFn(self.tag, ...) end
 
-
 --- @type LibPrettyPrint_Printer
 local o = S
 
