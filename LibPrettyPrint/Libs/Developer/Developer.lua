@@ -1,6 +1,7 @@
 local addon, ns = ...
 local O, GC, M, LibStub = ns.O, ns.GC, ns.M, ns.LibStub
 local devst = DEV_SUITE
+local lpp = LibPrettyPrint
 
 --- @class Developer
 local o = {}; lpp_dev = o
@@ -18,6 +19,7 @@ local val = {
   values  = { 1, 2, 3 }
 }
 
+--- Formatter test
 function o:test1()
   --- @type LibPrettyPrint_FormatterConfig
   local fc1 = { depth_limit = 1, }
@@ -31,16 +33,28 @@ function o:test1()
   return f1, f2, f3, val
 end
 
+function o:test2Single()
+  local p  = lpp:Printer()
+  return p, val
+end
+
+--- Printer Test
 function o:test2()
-    local lpp = LibPrettyPrint
-    local p1 = lpp:Printer({
-                               prefix = 'AddonSuite',
-                               sub_prefix = 'Namespace',
-                               show_timestamp = true,
-                             prefix_color   = 'B2FF79',
-                             sub_prefix_color = 'FFFA0E', })
-    local p2 = lpp:Printer()
-    return p1, p2, val
+  --- @type LibPrettyPrint_PrinterConfig
+  local pc1 = {
+    prefix = 'AddonSuite', sub_prefix = 'Namespace',
+    show_timestamp = true,
+    prefix_color   = 'B2FF79', sub_prefix_color = 'FFFA0E',
+    formatter = {  multiline_tables = true },
+  }
+
+  local isDev = false
+  local p1  = lpp:Printer(pc1, nil, function()
+    return isDev
+  end)
+  local p2  = lpp:Printer()
+
+  return p1, p2, val
 end
 
 --- @return LibPrettyPrint_Formatter

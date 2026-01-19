@@ -34,6 +34,10 @@ Type: Printer
 --- @field formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
 --- @field printFn LibPrettyPrint_PrintFn
 local S = {}; if not S then return end ; ns:register(ns.M.Printer, S)
+S.__index = S
+S.__type = 'LibPrettyPrint_Printer'
+S.__call = function(self, ...) self.printFn(self.tag, ...) end
+
 
 --- @type LibPrettyPrint_Printer
 local o = S
@@ -43,43 +47,41 @@ Methods:Printer
 -------------------------------------------------------------------------------]]
 --- @param config LibPrettyPrint_PrinterConfig|nil @Optional printer config
 --- @param formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
+--- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
 --- @return LibPrettyPrint_Printer
-function o:New(config, formatter)
+function o:New(config, formatter, predicateFn)
 
   -- todo next: predicateFn
 
   --- @type LibPrettyPrint_Printer
-  local pr = CreateAndInitFromMixin(o, config, formatter)
-  --DEVTOOLS_DEPTH_CUTOFF = 2
-  --return NewDumpPrinter(ns.name, ns.M.Printer, fmt)
-  if not pr.config.use_dump_tool then
-    pr.printFn = pr:NewPrintFn()
-  else
-    --pr.printFn = NewDumpPrintFn(ns.name, ns.M.Printer, self.formatter)
-  end
-  setmetatable(pr, pr.metatable)
+  local pr = setmetatable({}, o)
+  pr:Init(config, formatter, predicateFn)
 
   return pr
-end
-
---- @param config LibPrettyPrint_PrinterConfig|nil
---- @return LibPrettyPrint_PrinterConfig
-local function InitConfig(config)
-  local c = config
-  if not c then
-    c = DEFAULT_CONFIG
-  else
-    ns:TableDefaults(c, DEFAULT_CONFIG) end
-  return c
 end
 
 --- @private
 --- @param config LibPrettyPrint_PrinterConfig|nil @Optional printer config
 --- @param formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
-function o:Init(config, formatter)
-  self.config = InitConfig(config)
+function o:Init(config, formatter, predicateFn)
+  self.config = self:__InitConfig(config)
   self.formatter = formatter or ns.O.Formatter:New()
-  self.metatable = { __call = function(self, ...) self.printFn(self.tag, ...) end }
+  if not self.config.use_dump_tool then
+    self.printFn = self:NewPrintFn(predicateFn)
+  else
+    DEVTOOLS_DEPTH_CUTOFF = 2
+    self.printFn = self:NewDumpPrintFn(predicateFn)
+  end
+end
+
+--- @private
+--- @param config LibPrettyPrint_PrinterConfig|nil
+--- @return LibPrettyPrint_PrinterConfig
+function o:__InitConfig(config)
+  local c = config
+  if not c then c = ns:CopyTable(DEFAULT_CONFIG, false)
+  else ns:TableDefaults(c, DEFAULT_CONFIG) end
+  return c
 end
 
 --- @param sub_prefix string The new subPrefix name
@@ -88,25 +90,18 @@ function o:WithSubPrefix(sub_prefix)
   assert(type(sub_prefix) == 'string' and #ns:str_trim(sub_prefix) > 0,
          'Invalid sub_prefix; expected string, but got): ' .. tostring(sub_prefix))
 
-  self.config.sub_prefix = sub_prefix
-  local newConfig = ns:tbl_shallow_copy(self.config)
+  local newConfig = ns:CopyTable(self.config, false)
+  newConfig.sub_prefix = sub_prefix
 
   return o:New(newConfig, self.formatter)
-end
-
---- @param tbl table
-function o:PrintTable(tbl)
-  if not type(tbl) == "table" then _print(tbl) end
-
-  for key, val in pairs(tbl) do
-    _print(" ", self.formatter(val))
-  end
 end
 
 --- @protected
 --- @param predicateFn LibPrettyPrint_PredicateFn Function that evaluates a condition and returns true or false
 --- @return LibPrettyPrint_PrintFn Printer function that accepts any values and outputs formatted text; behaves like print
 function o:NewPrintFn(predicateFn)
+  if predicateFn and not predicateFn() then return function() end end
+
   self.tag = self:CreatTag()
 
   --- @type LibPrettyPrint_PrintFn
@@ -128,8 +123,8 @@ end
 --- @param sub_prefix Name The log sub prefix name
 --- @param predicateFn LibPrettyPrint_PredicateFn Function that evaluates a condition and returns true or false
 --- @return LibPrettyPrint_PrintFn Printer function that accepts any values and outputs formatted text; behaves like print
-function o:NewDumpPrintFn(prefix, sub_prefix, predicateFn)
-  assert(type(sub_prefix) == "string", "Prefix name must be a string.")
+function o:NewDumpPrintFn(predicateFn)
+  if predicateFn and not predicateFn() then return function() end end
 
   self.tag = self:CreatTag()
 

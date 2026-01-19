@@ -20,14 +20,14 @@ Methods
 --- @param printerConfig LibPrettyPrint_PrinterConfig|nil @Optional
 --- @return LibPrettyPrint_Printer
 --- @param formatter LibPrettyPrint_Formatter
-function o:Printer(printerConfig, formatter)
+function o:Printer(printerConfig, formatter, predicateFn)
     local f = self:Formatter()
     if formatter then
         f = formatter
     elseif printerConfig and printerConfig.formatter then
         f = self:Formatter(printerConfig.formatter)
     end
-    return ns.O.Printer:New(printerConfig, f)
+    return ns.O.Printer:New(printerConfig, f, predicateFn)
 end
 
 --- @param formatterConfig LibPrettyPrint_FormatterConfig|nil

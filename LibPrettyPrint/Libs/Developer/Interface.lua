@@ -28,7 +28,6 @@ Type Def
 --- @field table_key string The 8-char hex string, .e. 32CF21
 --- @field table_value string The 8-char hex string, .e. A8ECFF
 
-
 --- @class LibPrettyPrint_PrinterConfig
 --- @field prefix string @The main prefix in {{ PREFIX::SUBPREFIX }} : <Message>
 --- @field prefix_color RGBHex|nil @Optional; see RGBHex
@@ -36,6 +35,7 @@ Type Def
 --- @field sub_prefix_color RGBHex|nil @Optional; see RGBHex
 --- @field use_dump_tool boolean @Use Blizzard's Dump Tool for printing
 --- @field show_timestamp boolean @Shows timestamp for every print; default=true
---- @field formatter LibPrettyPrint_FormatterConfig @Optional formatter config
+--- @field formatter LibPrettyPrint_FormatterConfig|LibPrettyPrint_Formatter|nil @Optional formatter config
+--- @field predicateFn LibPrettyPrint_PredicateFn|nil
 
 

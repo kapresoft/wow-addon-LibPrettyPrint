@@ -44,15 +44,6 @@ function ns:colorFn(rgbHex)
     end
 end
 
---- @param t table
---- @return table|nil Returns a shallow copy of `t`; returns nil if `t` is nil
-function ns:tbl_shallow_copy(t)
-    if t == nil then return nil end
-    local t2 = {}
-    for k,v in pairs(t) do t2[k] = v end
-    return t2
-end
-
 --- @param s string
 --- @return string|nil
 function ns:str_trim(s)

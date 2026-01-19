@@ -26,7 +26,10 @@ local pformat        = pformatWrapper
 
 local o  = S;
 o.pprint = ns.O.pprint
-o.mt = { __call = function(self, ...) return self:format(...) end }
+o.mt = {
+    __type = 'LibPrettyPrint_Formatter',
+    __call = function(self, ...) return self:format(...) end
+}
 
 --- Note: Indent only matters if multiline_tables = true; otherwise set indent_size to 1
 local pprint = o.pprint
@@ -34,7 +37,6 @@ local pprint = o.pprint
 --[[-----------------------------------------------------------------------------
 Support Functions
 -------------------------------------------------------------------------------]]
-local function a() return ns.LibPrettyPrint end
 
 --- @default
 --- Create a new formatter with default configuration.
