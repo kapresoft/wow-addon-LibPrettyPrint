@@ -24,7 +24,40 @@ local DEFAULT_CONFIG = {
   sub_prefix_color = 'FFF57D',
   show_timestamp   = true,
 }
+
+local TIMESTAMP_COLOR = 'BCBCBC'; local tsC = ns:colorFn(TIMESTAMP_COLOR)
 local DEFAULT_TAG = '>>'
+--[[-------------------------------------------------------------------
+Support Functions
+---------------------------------------------------------------------]]
+--- @param config LibPrettyPrint_PrinterConfig|nil @Optional printer config
+local function assertConfig(config)
+  if config == nil then return end
+
+  assert(type(config) == 'table', "Invalid printer config. Expected type[LibPrettyPrint_PrinterConfig], but got: " .. type(config))
+
+  if config.formatter then
+    assert(type(config.formatter) == 'table', "Invalid config.formatter instance or config. Expected type[LibPrettyPrint_Formatter or LibPrettyPrint_FormatterConfig], but got: " .. type(config.formatter))
+  end
+end
+
+--- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
+local function assertPredicate(predicateFn)
+  if predicateFn == nil then return end
+
+  local pt = type(predicateFn)
+  assert( pt == 'function', ('Expected predicateFn type to be a function, but got type=[%s] instead.'):format(pt))
+end
+
+--- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
+--- @return boolean
+local function evalPredicate(predicateFn)
+  if predicateFn == nil then return true end
+
+  local rv = predicateFn(); local rvt = type(rv)
+  assert(rvt == 'boolean', ('Expected predicate function to return a boolean value, but got type=[%s] instead.'):format(rvt))
+  return rv
+end
 
 --[[-----------------------------------------------------------------------------
 Type: Printer
@@ -46,24 +79,30 @@ local o = S
 Methods:Printer
 -------------------------------------------------------------------------------]]
 --- @param config LibPrettyPrint_PrinterConfig|nil @Optional printer config
---- @param formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
 --- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
 --- @return LibPrettyPrint_Printer
-function o:New(config, formatter, predicateFn)
+function o:New(config, predicateFn)
+  assertConfig(config)
+  assertPredicate(predicateFn)
 
   --- @type LibPrettyPrint_Printer
   local pr = setmetatable({}, o)
-  pr:__Init(config, formatter, predicateFn)
+  pr:__Init(config, predicateFn)
 
   return pr
 end
 
 --- @private
 --- @param config LibPrettyPrint_PrinterConfig|nil @Optional printer config
---- @param formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
-function o:__Init(config, formatter, predicateFn)
+--- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
+function o:__Init(config, predicateFn)
   self.config = self:__InitConfig(config)
-  self.formatter = formatter or ns.O.Formatter:New()
+
+  -- formatter can be a config or an instance of Formatter
+  if not ns:IsType(self.config.formatter, ns.O.Formatter) then
+    self.config.formatter = ns.O.Formatter:New(self.config.formatter)
+  end
+
   if not self.config.use_dump_tool then
     self.printFn = self:NewPrintFn(predicateFn)
   else
@@ -78,7 +117,7 @@ end
 function o:__InitConfig(config)
   local c = config
   if not c then c = ns:CopyTable(DEFAULT_CONFIG, false)
-  else ns:TableDefaults(c, DEFAULT_CONFIG) end
+  else ns:ApplyTableDefaults(c, DEFAULT_CONFIG) end
   return c
 end
 
@@ -91,14 +130,14 @@ function o:WithSubPrefix(sub_prefix)
   local newConfig = ns:CopyTable(self.config, false)
   newConfig.sub_prefix = sub_prefix
 
-  return o:New(newConfig, self.formatter)
+  return o:New(newConfig)
 end
 
 --- @protected
 --- @param predicateFn LibPrettyPrint_PredicateFn Function that evaluates a condition and returns true or false
 --- @return LibPrettyPrint_PrintFn Printer function that accepts any values and outputs formatted text; behaves like print
 function o:NewPrintFn(predicateFn)
-  if predicateFn and not predicateFn() then return function() end end
+  if not evalPredicate(predicateFn) then return function() end end
 
   self.tag = self:CreatTag()
 
@@ -107,11 +146,12 @@ function o:NewPrintFn(predicateFn)
     local args = ns:SafePack(...)
     for i = 1, args.n do
       if type(args[i]) == "table" then
-        args[i] = self.formatter(args[i])
+        args[i] = self.config.formatter(args[i])
       end
     end
     if self.config.show_timestamp then
-      return _print("[" .. date("%H:%M:%S") .. "]", ns:SafeUnpack(args))
+      local ts = tsC("[" .. date("%H:%M:%S") .. "]")
+      return _print(ts, ns:SafeUnpack(args))
     end
     return _print(ns:SafeUnpack(args))
   end

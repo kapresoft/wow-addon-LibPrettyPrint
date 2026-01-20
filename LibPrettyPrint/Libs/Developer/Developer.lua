@@ -33,9 +33,20 @@ function o:test1Formatters()
 end
 
 function o:test2Single()
-  local p  = lpp:Printer()
-  print('xx isPrinterType:', ns:IsType(p, ns.O.Printer))
-  return p, val, ns.O.Printer
+  --- @type LibPrettyPrint_FormatterConfig
+  local fc1 = { multiline_tables = false, depth_limit = 3, }
+
+  --- @type LibPrettyPrint_Formatter
+  local f1 = lpp:Formatter(fc1)
+
+  --- @type LibPrettyPrint_PrinterConfig
+  local pc1 = { prefix= "MacroPlus", sub_prefix = "Options", show_all = true,
+                prefix_color = 'FF95A8', sub_prefix_color = 'FFFA0E',
+                xformatter = f1, use_dump_tool = false, }
+
+  local p  = lpp:Printer(pc1)
+
+  return p, val
 end
 
 --- Printer Test
@@ -72,16 +83,17 @@ function o:test3()
     --- @type LibPrettyPrint_PrinterConfig
     local pc1 = { prefix= "MacroPlus", sub_prefix = "Options", show_all = true,
                   prefix_color = 'FF95A8', sub_prefix_color = 'FFFA0E',
+                  formatter = f1,
                   use_dump_tool = false, }
+
     --- @type LibPrettyPrint_PrinterConfig
-    local pc2 = { prefix="Gears", sub_prefix="Namespace",
-                  xshow_timestamp = true }
+    local pc2 = { prefix="Gears", sub_prefix="Namespace", formatter = fc2,
+                  show_timestamp = true }
 
-
-    local p1 = lpp:Printer(pc1, f1)
-    local p2 = lpp:Printer(pc2, f2)
-    local p3 = lpp:Printer({show_timestamp = false})
-    return f1, f2, f3, p1, p2, p3, f3, val
+    local p1 = lpp:Printer(pc1, function() return ns:IsDev() end)
+    local p2 = lpp:Printer(pc2)
+    local p3 = lpp:Printer({ show_timestamp = false })
+    return f1, f2, f3, p1, p2, p3, val
 end
 
 

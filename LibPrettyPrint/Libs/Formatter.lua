@@ -70,7 +70,7 @@ end
 function o:__Init(config)
     if config then
         self.config = ns:CopyTable(config, false)
-        ns:MergeTable(self.config, DEFAULT_CONFIG)
+        ns:ApplyTableDefaults(self.config, DEFAULT_CONFIG)
         return
     end
     self.config = ns:CopyTable(DEFAULT_CONFIG, false)

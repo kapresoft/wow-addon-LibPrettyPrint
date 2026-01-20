@@ -42,7 +42,7 @@ end
 
 
 --- @param rgbHex RGBHex|nil    @Optional
---- @return function(key:string) : string The color formatted key
+--- @return fun(key:string) : string The color formatted key
 function ns:colorFn(rgbHex)
     return function(text)
         local c = CreateColorFromRGBHexString(rgbHex)
@@ -102,20 +102,26 @@ function ns:MergeTable(destination, source)
     return destination
 end
 
---- Apply source into destination only if the key does not exist in destination.
+--- Apply source into destination.
+--- Only fills missing destination values.
+--- Replacement occurs only when destination has no value.
+--- Table values are deep-copied.
 --- Modifies and returns destination.
 --- @param destination table
 --- @param source table
 --- @return table
-function ns:TableDefaults(destination, source)
+function ns:ApplyTableDefaults(destination, source)
     for k, v in pairs(source) do
-        if destination[k] == nil then
+        local dv = destination[k]
+
+        if dv == nil then
             if type(v) == "table" then
                 destination[k] = self:CopyTable(v, false)
             else
                 destination[k] = v
             end
         end
+        -- else: destination already has a value → never replace
     end
     return destination
 end
