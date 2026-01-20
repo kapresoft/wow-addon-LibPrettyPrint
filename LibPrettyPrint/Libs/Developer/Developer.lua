@@ -19,7 +19,7 @@ local val = {
 }
 
 --- Formatter test
-function o:test1()
+function o:test1Formatters()
   --- @type LibPrettyPrint_FormatterConfig
   local fc1 = { depth_limit = 1, }
   --- @type LibPrettyPrint_FormatterConfig
@@ -39,7 +39,7 @@ function o:test2Single()
 end
 
 --- Printer Test
-function o:test2()
+function o:test2Printers()
   --- @type LibPrettyPrint_PrinterConfig
   local pc1 = {
     prefix = 'AddonSuite', sub_prefix = 'Namespace',
@@ -48,10 +48,7 @@ function o:test2()
     formatter = {  multiline_tables = true },
   }
 
-  local isDev = false
-  local p1  = lpp:Printer(pc1, nil, function()
-    return isDev
-  end)
+  local p1  = lpp:Printer(pc1, nil, function() return ns:IsDev() end)
   local p2  = lpp:Printer()
 
   return p1, p2, val

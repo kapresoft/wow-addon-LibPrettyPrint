@@ -72,7 +72,7 @@ local defaults = {
     object_cache      = 'local', -- cache blob and table to give it a id, 'local' cache per print, 'global' cache
     -- per process, falsy value to disable (might cause infinite loop)
     -- format settings
-    indent_size       = 2,       -- indent for each nested table level
+    indent_size       = 2,       -- indent for each nested table level; Note: Indent only matters if multiline_tables = true; otherwise set indent_size to 1.
     level_width       = 80,      -- max width per indent level
     wrap_string       = false,   -- wrap string when it's longer than level_width
     wrap_array        = false,   -- wrap every array elements

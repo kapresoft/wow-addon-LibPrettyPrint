@@ -1,6 +1,7 @@
 --- @type string
 local addon
 --- @class LibPrettyPrint_Namespace
+--- @field settings LibPrettyPrint_Settings
 --- @field name string The addon Name
 --- @field O LibPrettyPrint_NamespaceObjects
 --- @field O LibPrettyPrint_Formatter
@@ -19,9 +20,18 @@ local modules = {
 --- @field pprint LibPrettyPrint_pprint
 --- @field Printer LibPrettyPrint_Printer
 --- @field Formatter LibPrettyPrint_Formatter
-local O = {}
+local O        = {}
 
-ns.M = modules; ns.O = O
+ns.M           = modules; ns.O = O
+
+--- @class LibPrettyPrint_Settings
+--- @field developer boolean @if true, enables developer mode
+local settings = {
+    developer = false
+}; ns.settings = settings
+
+--- @return boolean
+function ns:IsDev() return self.settings.developer == true end
 
 function ns:register(name, obj)
     assert(name, 'Module name required')
@@ -30,9 +40,6 @@ function ns:register(name, obj)
     return obj
 end
 
-function ns:log()
-
-end
 
 --- @param rgbHex RGBHex|nil    @Optional
 --- @return function(key:string) : string The color formatted key

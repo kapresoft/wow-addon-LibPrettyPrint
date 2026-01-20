@@ -36,6 +36,7 @@ Type: Printer
 local S = {}; if not S then return end ; ns:register(ns.M.Printer, S)
 S.__index = S
 S.__type = 'LibPrettyPrint_Printer'
+--- @param self LibPrettyPrint_Printer
 S.__call = function(self, ...) self.printFn(self.tag, ...) end
 
 --- @type LibPrettyPrint_Printer

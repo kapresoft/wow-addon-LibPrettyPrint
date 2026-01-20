@@ -1,6 +1,6 @@
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
-local addon, ns = ...
-local O, GC, M, LibStub = ns.O, ns.GC, ns.M, ns.LibStub
-
+--- @type LibPrettyPrint_Namespace
+local ns = select(2, ...)
+ns.settings.developer = true
