@@ -54,7 +54,7 @@ function o:New(config, formatter, predicateFn)
 
   --- @type LibPrettyPrint_Printer
   local pr = setmetatable({}, o)
-  pr:Init(config, formatter, predicateFn)
+  pr:__Init(config, formatter, predicateFn)
 
   return pr
 end
@@ -62,7 +62,7 @@ end
 --- @private
 --- @param config LibPrettyPrint_PrinterConfig|nil @Optional printer config
 --- @param formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
-function o:Init(config, formatter, predicateFn)
+function o:__Init(config, formatter, predicateFn)
   self.config = self:__InitConfig(config)
   self.formatter = formatter or ns.O.Formatter:New()
   if not self.config.use_dump_tool then
