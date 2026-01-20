@@ -27,6 +27,23 @@ local DEFAULT_CONFIG = {
 
 local TIMESTAMP_COLOR = 'BCBCBC'; local tsC = ns:colorFn(TIMESTAMP_COLOR)
 local DEFAULT_TAG = '>>'
+
+--[[-----------------------------------------------------------------------------
+Type: Printer
+-------------------------------------------------------------------------------]]
+--- @class LibPrettyPrint_PrinterImpl : LibPrettyPrint_PrinterInterface
+--- @field config LibPrettyPrint_PrinterConfig|nil @Optional printer config
+--- @field formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
+--- @field printFn LibPrettyPrint_PrintFn
+local S = {}; if not S then return end ; ns:register(ns.M.Printer, S)
+S.__index = S
+S.__type = 'LibPrettyPrint_Printer'
+--- @param self LibPrettyPrint_Printer
+S.__call = function(self, ...) self.printFn(self.tag, ...) end
+
+--- @type LibPrettyPrint_Printer
+local o = S
+
 --[[-------------------------------------------------------------------
 Support Functions
 ---------------------------------------------------------------------]]
@@ -58,22 +75,6 @@ local function evalPredicate(predicateFn)
   assert(rvt == 'boolean', ('Expected predicate function to return a boolean value, but got type=[%s] instead.'):format(rvt))
   return rv
 end
-
---[[-----------------------------------------------------------------------------
-Type: Printer
--------------------------------------------------------------------------------]]
---- @class LibPrettyPrint_Printer
---- @field config LibPrettyPrint_PrinterConfig|nil @Optional printer config
---- @field formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
---- @field printFn LibPrettyPrint_PrintFn
-local S = {}; if not S then return end ; ns:register(ns.M.Printer, S)
-S.__index = S
-S.__type = 'LibPrettyPrint_Printer'
---- @param self LibPrettyPrint_Printer
-S.__call = function(self, ...) self.printFn(self.tag, ...) end
-
---- @type LibPrettyPrint_Printer
-local o = S
 
 --[[-----------------------------------------------------------------------------
 Methods:Printer

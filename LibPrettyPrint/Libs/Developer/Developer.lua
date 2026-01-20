@@ -44,9 +44,9 @@ function o:test2Single()
                 prefix_color = 'FF95A8', sub_prefix_color = 'FFFA0E',
                 xformatter = f1, use_dump_tool = false, }
 
-  local p  = lpp:Printer(pc1)
-
-  return p, val
+  local p1  = lpp:Printer(pc1)
+  local p2 = p1:WithSubPrefix('ButtonUI')
+  return p1, p2, val
 end
 
 --- Printer Test

@@ -12,8 +12,7 @@ local DEFAULT_CONFIG = {
 Library: Formatter
 ---------------------------------------------------------------------]]
 
---- @class LibPrettyPrint_Formatter
---- @field config LibPrettyPrint_FormatterConfig
+--- @class LibPrettyPrint_FormatterImpl : LibPrettyPrint_FormatterInterface
 --- @field private pprint LibPrettyPrint_pprint
 local S = {}; ns:register(ns.M.Formatter, S)
 S.__index = S
