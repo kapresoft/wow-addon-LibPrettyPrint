@@ -51,8 +51,6 @@ Methods:Printer
 --- @return LibPrettyPrint_Printer
 function o:New(config, formatter, predicateFn)
 
-  -- todo next: predicateFn
-
   --- @type LibPrettyPrint_Printer
   local pr = setmetatable({}, o)
   pr:__Init(config, formatter, predicateFn)
