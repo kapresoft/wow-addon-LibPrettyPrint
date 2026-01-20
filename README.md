@@ -15,6 +15,27 @@ Adapted and extended for World of Warcraft.
 
 ## Usage Examples
 
+### Obtaining an instance of LibPrettyFormat
+
+When the library is loaded, it exposes a global reference named `LibPrettyPrint`.
+This global always points to the latest registered version of the library.
+ 
+```lua
+print('LibPrettyPrint:', type(LibPrettyPrint))
+```
+If you prefer to retrieve the library explicitly via `LibStub`, you can do so using its major version:
+
+```lua
+local lpp = LibStub('LibPrettyPrint-1.0')
+print('LibPrettyPrint:', type(lpp))
+```
+
+#### Notes:
+- Both approaches return the same instance
+- LibStub always resolves to the newest minor version of a given major
+- Older versions cannot be retrieved once a newer one is registered
+
+
 > A formatter converts Lua values into readable formatted strings.
 
 ### Formatter
