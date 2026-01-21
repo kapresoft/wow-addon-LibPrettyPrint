@@ -21,7 +21,7 @@
 ## X-Github-Repo: https://github.com/kapresoft/wow-addon-LibPrettyPrint
 ## X-Github-Issues: https://github.com/kapresoft/wow-addon-LibPrettyPrint/issues
 ## X-CurseForge: https://www.curseforge.com/wow/addons/libprettyprint
-## X-Curse-Project-ID: 1404138
+## X-Curse-Project-ID: 1424095
 ## X-Github-Project-Author: @project-author@
 ## X-Github-Project-Hash: @project-hash@
 ## X-Github-Project-Last-Changed-Date: @project-date-iso@
