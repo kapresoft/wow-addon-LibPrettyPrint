@@ -1,0 +1,47 @@
+package-as: LibPrettyPrint
+# --------------------------
+manual-changelog: false
+license-output: LICENSE.txt
+enable-nolib-creation: no
+
+embedded-libraries:
+  - LibStub
+
+tools-used:
+  - DevSuite
+  - DebugChatFrame
+  - Addon-Usage
+  - Bugsack
+  - Bug-Grabber
+
+# Use github because svn repos are slower
+# basepath is ${package-as}
+externals:
+  LibPrettyPrint/ThirdParty-Libs/LibStub: https://github.com/lua-wow/LibStub
+
+ignore:
+  - "dev"
+  - "*.md"
+  - "*.yaml"
+  - LICENSE
+  - dev
+  - doc
+  - scripts
+  - Interface
+  - ThirdParty-Libs/LibStub/tests
+
+# REQUIRED for CurseForge packager (non-obvious):
+# The LEFT side MUST be <repo-folder>/<addon-folder>
+#   - <addon-folder> MUST be the folder that contains the .toc files
+# The RIGHT side MUST be the addon name:
+#   - Must match the .toc filename (AddonName.toc)
+#   - Must match `package-as`
+#
+# NOTE:
+# CurseForge release.sh (poorly) relies on `move-folders` for *addon discovery*,
+# not just post-processing. If this does not exactly match
+# <repo>/<addon>, `toc_root_paths` will be empty and packaging WILL fail.
+#
+# ⚠️ Do not change unless you also change the repo/addon layout.
+move-folders:
+  LibPrettyPrint/LibPrettyPrint: LibPrettyPrint
