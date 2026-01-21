@@ -17,7 +17,7 @@ tools-used:
 # Use github because svn repos are slower
 # basepath is ${package-as}
 externals:
-  LibPrettyPrint/ThirdParty-Libs/LibStub: https://github.com/lua-wow/LibStub
+  LibPrettyPrint/ThirdParty/Libs/LibStub: https://github.com/lua-wow/LibStub
 
 ignore:
   - "dev"
