@@ -1,0 +1,8 @@
+## Interface: 100002
+## Title: Pull-Ext-Lib
+## Author: kapresoft@gmail.com
+
+LibPrettyPrint\LibPrettyPrint.xml
+
+# This file is temporarily used to pull external libs
+# ./dev/pull-extlib.sh
