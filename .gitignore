@@ -44,4 +44,7 @@ luac.out
 .setup
 
 # External Lib Dir
+ThirdParty/Libs
+
+# External Lib Dir (old)
 LibPrettyPrint/ThirdParty/Libs

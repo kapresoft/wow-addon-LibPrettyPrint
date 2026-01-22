@@ -7,7 +7,7 @@ package-as: _setup
 # --------------------------
 manual-changelog: CHANGELOG.md
 
-# Use github because svn repos are slower
+# Use GitHub because svn repos are slower
 # basepath is ${package-as}
 externals:
   ThirdParty-Libs/LibStub: https://github.com/lua-wow/LibStub
@@ -18,9 +18,8 @@ ignore:
   - "*.yaml"
   - "*.toc"
   - LICENSE
-  - LibPrettyPrint
   - ThirdParty-Libs/LibStub/tests
 
 # Base path is .release/
 move-folders:
-  _setup/ThirdParty-Libs: ../LibPrettyPrint/ThirdParty/Libs
+  _setup/ThirdParty-Libs: ../ThirdParty/Libs
