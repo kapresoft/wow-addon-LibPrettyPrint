@@ -1,14 +1,9 @@
 #!/usr/bin/env zsh
 
-ADDON_NAME=Gears
-# REL_CONFIG Must match package-as in pull-extlib.toc
-# package-as: dev/pull-extlib
-REL_CONFIG=dev/pull-extlib.yaml
 BUILD_DIR=./.release
-SCRIPT_DIR=./dev
-RELEASE_SCRIPT=${SCRIPT_DIR}/release.sh
-PACKAGE_NAME=Pull-Ext-Lib
-EXT_LIB_DIR=ExtLib
+RELEASE_SCRIPT=./dev/release.sh
+TOC_FILE="setup.toc"
+PKGMETA_FILE="setup.yml"
 
 p() {
   printf "%-9s: %-40s\n" "$1" "$2"
@@ -27,7 +22,6 @@ ensure_file() {
   return "$?"
 }
 
-# ./dev/release.sh -duz -m ./dev/pull-ext-lib.toc
 # Options:
 # -d  Skip uploading.
 # -u  Use Unix line-endings.
@@ -35,36 +29,30 @@ ensure_file() {
 # -r  releasedir    Set directory containing the package directory. Defaults to "$topdir/.release".
 # -m  pkgmeta.yaml  Set the pkgmeta file to use.
 _Release() {
-    if [[ "$1" = "" ]]; then
-        echo "Usage: ./release <pkgmeta-file.yml>"
-        return 0
-    fi
-    local toc="setup.toc"
-    local pkgmeta="setup.yml"
-    local pkgmeta_path="./dev/${pkgmeta}"
+    local pkgmeta_path="./dev/${PKGMETA_FILE}"
 
     ensure_dir "$BUILD_DIR"
-    cp "${pkgmeta_path}" "_${pkgmeta}" || {
+    cp "${pkgmeta_path}" "_${PKGMETA_FILE}" || {
       echo "Missing: ${pkgmeta_path}"
       return 1
     }
-    ensure_file "./_${pkgmeta}" || {
+    ensure_file "./_${PKGMETA_FILE}" || {
       p "Missing: $file"
       return 1
     }
-    cp ./dev/${toc} _${toc}
+    cp ./dev/${TOC_FILE} _${TOC_FILE}
 
-    local args="-duz -r ${BUILD_DIR} -m _${pkgmeta}"
+    local args="-duz -r ${BUILD_DIR} -m _${PKGMETA_FILE}"
     local cmd="${RELEASE_SCRIPT} ${args}"
     echo "Executing: ${cmd}"
-    eval "${cmd}" && echo "Execution Complete: ${cmd}" || {
+    (eval "${cmd}" && echo "Execution Complete: ${cmd}") || {
       echo "Run failed."
       return 1
     }
     echo "Cleaning up..." && {
-      rm _${pkgmeta}
-      rm _${toc}
+      rm _${PKGMETA_FILE}
+      rm _${TOC_FILE}
     }
 }
 
-_Release "${REL_CONFIG}"
+_Release
