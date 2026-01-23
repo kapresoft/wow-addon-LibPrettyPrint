@@ -35,13 +35,14 @@ Type: Printer
 --- @field config LibPrettyPrint_PrinterConfig|nil @Optional printer config
 --- @field formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
 --- @field printFn LibPrettyPrint_PrintFn
+--- @field predicateFn LibPrettyPrint_PredicateFn
 local S = {}; if not S then return end ; ns:register(ns.M.Printer, S)
 S.__index = S
 S.__type = 'LibPrettyPrint_Printer'
 --- @param self LibPrettyPrint_Printer
 S.__call = function(self, ...) self.printFn(self.tag, ...) end
 
---- @type LibPrettyPrint_Printer
+--- @type LibPrettyPrint_PrinterImpl
 local o = S
 
 --[[-------------------------------------------------------------------
@@ -98,6 +99,7 @@ end
 --- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
 function o:__Init(config, predicateFn)
   self.config = self:__InitConfig(config)
+  self.predicateFn = predicateFn
 
   -- formatter can be a config or an instance of Formatter
   if not ns:IsType(self.config.formatter, ns.O.Formatter) then
@@ -131,7 +133,7 @@ function o:WithSubPrefix(sub_prefix)
   local newConfig = ns:CopyTable(self.config, false)
   newConfig.sub_prefix = sub_prefix
 
-  return o:New(newConfig)
+  return o:New(newConfig, self.predicateFn)
 end
 
 --- @protected
