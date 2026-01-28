@@ -6,7 +6,7 @@ local LibStub = LibStub
 --[[-----------------------------------------------------------------------------
 LibPrettyPrint
 -------------------------------------------------------------------------------]]
-local MAJOR, MINOR = 'LibPrettyPrint-1.0', 2
+local MAJOR, MINOR = 'LibPrettyPrint-1.0', 3
 
 --- @class LibPrettyPrint
 local S = LibStub:NewLibrary(MAJOR, MINOR); if not S then return end
