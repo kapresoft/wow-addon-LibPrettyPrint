@@ -1,5 +1,5 @@
 --- @type LibPrettyPrint_Namespace
-local ns = select(2, ...)
+local ns = select(2, ...).LibPrettyPrint; if not ns then return end
 
 --[[-----------------------------------------------------------------------------
 Types

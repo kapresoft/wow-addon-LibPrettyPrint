@@ -1,12 +1,21 @@
+-- if LibPrettyPrint exists, it's already been loaded
+if LibPrettyPrint then return end
+
 --- @type string
 local addon
+
+--- @class PrivateNamespace
+--- @field LibPrettyPrint LibPrettyPrint_Namespace
+local parentNs
+
 --- @class LibPrettyPrint_Namespace
 --- @field settings LibPrettyPrint_Settings
 --- @field name string The addon Name
 --- @field O LibPrettyPrint_NamespaceObjects
 --- @field O LibPrettyPrint_Formatter
-local ns
-addon, ns = ...; ns.name = addon
+local ns = {}
+
+addon, parentNs = ...; parentNs.LibPrettyPrint = ns; ns.name = addon
 
 --- @class LibPrettyPrint_ModuleNames
 local modules = {
@@ -18,7 +27,7 @@ local modules = {
 --- @class LibPrettyPrint_NamespaceObjects
 --- @field LibPrettyPrint LibPrettyPrint
 --- @field pprint LibPrettyPrint_pprint
---- @field Printer LibPrettyPrint_Printer
+--- @field Printer LibPrettyPrint_PrinterImpl
 --- @field Formatter LibPrettyPrint_Formatter
 local O        = {}
 
