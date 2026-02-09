@@ -13,9 +13,6 @@ template: |
 
   $CHANGES
   
-  ### Contributors:
-  $CONTRIBUTORS
-  
   #### Links:
 
   - [Curse Forge](https://www.curseforge.com/wow/addons/libprettyprint/files)
