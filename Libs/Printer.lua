@@ -118,10 +118,7 @@ end
 --- @param config LibPrettyPrint_PrinterConfig|nil
 --- @return LibPrettyPrint_PrinterConfig
 function o:__InitConfig(config)
-  local c = config
-  if not c then c = ns:CopyTable(DEFAULT_CONFIG, false)
-  else ns:ApplyTableDefaults(c, DEFAULT_CONFIG) end
-  return c
+  return ns:Table_MergeWithDefaults(DEFAULT_CONFIG, config or {})
 end
 
 --- @param sub_prefix string The new subPrefix name
@@ -130,7 +127,7 @@ function o:WithSubPrefix(sub_prefix)
   assert(type(sub_prefix) == 'string' and #ns:str_trim(sub_prefix) > 0,
          'Invalid sub_prefix; expected string, but got): ' .. tostring(sub_prefix))
 
-  local newConfig = ns:CopyTable(self.config, false)
+  local newConfig = ns:Table_MergeWithDefaults(self.config, { sub_prefix = sub_prefix })
   newConfig.sub_prefix = sub_prefix
 
   return o:New(newConfig, self.predicateFn)

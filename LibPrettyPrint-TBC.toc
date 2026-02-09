@@ -11,7 +11,7 @@
 ## Category-esES: Bibliotecas
 ## Category-esMX: Bibliotecas
 ## Category-frFR: Bibliothèques
-## Category-itITs: Librerie
+## Category-itIT: Librerie
 ## Category-koKR: 라이브러리
 ## Category-ptBR: Bibliotecas
 ## Category-ruRU: Библиотеки

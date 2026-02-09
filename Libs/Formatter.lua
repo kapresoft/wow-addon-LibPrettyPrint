@@ -67,12 +67,7 @@ end
 --- @private
 --- @param config LibPrettyPrint_FormatterConfig|nil
 function o:__Init(config)
-    if config then
-        self.config = ns:CopyTable(config, false)
-        ns:ApplyTableDefaults(self.config, DEFAULT_CONFIG)
-        return
-    end
-    self.config = ns:CopyTable(DEFAULT_CONFIG, false)
+    self.config = ns:Table_MergeWithDefaults(DEFAULT_CONFIG, config or {})
 end
 
 --- @protected
@@ -80,8 +75,7 @@ end
 --- @return LibPrettyPrint_Formatter
 function o:Derive(configAdditive)
     assert(configAdditive, "The additive config is required.")
-    local config = ns:CopyTable(self.config or {})
-    if configAdditive then ns:MergeTable(config, configAdditive) end
+    local config = ns:Table_MergeWithDefaults(self.config, configAdditive or {})
     return self:New(config)
 end
 

@@ -83,11 +83,12 @@ function ns:SafeUnpack(tbl, startIndex) return unpack(tbl, startIndex or 1, tbl.
 --- @param tbl table
 --- @param shallow boolean
 --- @return table The copied table
-function ns:CopyTable(tbl, shallow)
+function ns:Table_Copy(tbl, shallow)
+    if tbl == nil then return nil end
     local copy = {};
     for k, v in pairs(tbl) do
         if type(v) == "table" and not shallow then
-            copy[k] = self:CopyTable(v);
+            copy[k] = self:Table_Copy(v);
         else
             copy[k] = v;
         end
@@ -95,44 +96,31 @@ function ns:CopyTable(tbl, shallow)
     return copy;
 end
 
---- Merges source into destination; Overwrites existing fields.
---- Modifies and returns destination.
---- @param destination table
---- @param source table
+--- Applies non-nil values from {right} over {left}.
+--- {left} values act as defaults.
+--- Returns a new table; inputs are not modified.
+--- #### Example:
+--- ```
+--- local mergedConfig = Table_MergeWithDefaults(DEFAULT, userConfig)
+--- ```
+--- @param left table|nil The default values
+--- @param right table  The override values; overrides values of {left} if non-nil
 --- @return table
-function ns:MergeTable(destination, source)
-    for k, v in pairs(source) do
+function ns:Table_MergeWithDefaults(left, right)
+    assert(type(right) == 'table', "The param [right] must be a table.")
+    if left == nil then return self:Table_Copy(right, false) end
+    local result = self:Table_Copy(left, false)
+    
+    -- apply override values over defaults
+    for k, v in pairs(right) do
         if type(v) == "table" then
-            destination[k] = self:CopyTable(v, false)
+            local destSub = type(result[k]) == "table" and result[k] or nil
+            result[k] = self:Table_MergeWithDefaults(destSub, v)
         else
-            destination[k] = v
+            if v ~= nil then result[k] = v end
         end
     end
-    return destination
-end
-
---- Apply source into destination.
---- Only fills missing destination values.
---- Replacement occurs only when destination has no value.
---- Table values are deep-copied.
---- Modifies and returns destination.
---- @param destination table
---- @param source table
---- @return table
-function ns:ApplyTableDefaults(destination, source)
-    for k, v in pairs(source) do
-        local dv = destination[k]
-
-        if dv == nil then
-            if type(v) == "table" then
-                destination[k] = self:CopyTable(v, false)
-            else
-                destination[k] = v
-            end
-        end
-        -- else: destination already has a value → never replace
-    end
-    return destination
+    return result
 end
 
 --- Checks whether value is an instance of class
