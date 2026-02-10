@@ -137,12 +137,11 @@ end
 --- @param predicateFn LibPrettyPrint_PredicateFn Function that evaluates a condition and returns true or false
 --- @return LibPrettyPrint_PrintFn Printer function that accepts any values and outputs formatted text; behaves like print
 function o:NewPrintFn(predicateFn)
-  if not evalPredicate(predicateFn) then return function() end end
-
   self.tag = self:CreatTag()
 
   --- @type LibPrettyPrint_PrintFn
   local fn = function(...)
+    if not evalPredicate(predicateFn) then return function() end end
     local args = ns:SafePack(...)
     for i = 1, args.n do
       if type(args[i]) == "table" then
@@ -162,14 +161,13 @@ end
 --- @param predicateFn LibPrettyPrint_PredicateFn Function that evaluates a condition and returns true or false
 --- @return LibPrettyPrint_PrintFn Printer function that accepts any values and outputs formatted text; behaves like print
 function o:NewDumpPrintFn(predicateFn)
-  if predicateFn and not predicateFn() then return function() end end
-
   self.tag = self:CreatTag()
-
-  _print(self.tag)
-
+  
+  if evalPredicate(predicateFn) then _print(self.tag) end
+  
   local _p = DevTools_Dump
   return function(...)
+    if not evalPredicate(predicateFn) then return function() end end
     local args = ns:SafePack(...)
     for i = 1, args.n do
       _p(args[i])
