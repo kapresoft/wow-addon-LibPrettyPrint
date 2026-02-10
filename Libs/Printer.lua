@@ -137,11 +137,11 @@ end
 --- @param predicateFn LibPrettyPrint_PredicateFn Function that evaluates a condition and returns true or false
 --- @return LibPrettyPrint_PrintFn Printer function that accepts any values and outputs formatted text; behaves like print
 function o:NewPrintFn(predicateFn)
-  self.tag = self:CreatTag()
+  self.tag = self:CreateTag()
 
   --- @type LibPrettyPrint_PrintFn
   local fn = function(...)
-    if not evalPredicate(predicateFn) then return function() end end
+    if not evalPredicate(predicateFn) then return end
     local args = ns:SafePack(...)
     for i = 1, args.n do
       if type(args[i]) == "table" then
@@ -157,17 +157,15 @@ function o:NewPrintFn(predicateFn)
   return fn
 end
 
---- @param sub_prefix Name The log sub prefix name
 --- @param predicateFn LibPrettyPrint_PredicateFn Function that evaluates a condition and returns true or false
 --- @return LibPrettyPrint_PrintFn Printer function that accepts any values and outputs formatted text; behaves like print
 function o:NewDumpPrintFn(predicateFn)
-  self.tag = self:CreatTag()
-  
-  if evalPredicate(predicateFn) then _print(self.tag) end
+  self.tag = self:CreateTag()
   
   local _p = DevTools_Dump
   return function(...)
-    if not evalPredicate(predicateFn) then return function() end end
+    if not evalPredicate(predicateFn) then return end
+    _print(self.tag)
     local args = ns:SafePack(...)
     for i = 1, args.n do
       _p(args[i])
@@ -177,7 +175,7 @@ end
 
 --- @private
 --- @return string
-function o:CreatTag()
+function o:CreateTag()
   local prefix = self:CreateCombinedPrefix()
   if not prefix then
     local p_color = ns:colorFn(self.config.prefix_color)
