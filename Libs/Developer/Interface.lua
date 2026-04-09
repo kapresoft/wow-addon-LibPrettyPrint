@@ -23,10 +23,12 @@ Type Defs
 
 --- @class LibPrettyPrint_PrinterInterface
 --- @field WithSubPrefix fun(self:LibPrettyPrint_Printer, sub_prefix:string) : LibPrettyPrint_Printer
+--- @field New fun(self:LibPrettyPrint_Printer, config:LibPrettyPrint_PrinterConfig, predicateFn:LibPrettyPrint_PredicateFn|nil) : LibPrettyPrint_Printer 
 
 --- @class LibPrettyPrint_FormatterInterface
 --- @field Compact fun(self:LibPrettyPrint_Formatter) : LibPrettyPrint_Formatter
 --- @field MultiLine fun(self:LibPrettyPrint_Formatter) : LibPrettyPrint_Formatter
+--- @field New fun(self:LibPrettyPrint_Formatter, config:LibPrettyPrint_FormatterConfig, predicateFn:LibPrettyPrint_PredicateFn|nil) : LibPrettyPrint_Formatter
 
 --- @class LibPrettyPrint_FormatterConfig
 --- @field multiline_tables boolean       @Add newlines to tables for each element.                            default=false

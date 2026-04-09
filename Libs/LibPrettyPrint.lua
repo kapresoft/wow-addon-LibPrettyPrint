@@ -1,19 +1,14 @@
 --- @type LibPrettyPrint_Namespace
 local ns = select(2, ...).LibPrettyPrint; if not ns then return end
---- @type LibStub
-local LibStub = LibStub
 
 --[[-----------------------------------------------------------------------------
 LibPrettyPrint
 -------------------------------------------------------------------------------]]
-local MAJOR, MINOR = 'LibPrettyPrint-1.0', 4
+local MAJOR, MINOR = 'LibPrettyPrint-1.0', 5
 
 --- @class LibPrettyPrint
-local S = LibStub:NewLibrary(MAJOR, MINOR); if not S then return end
-LibPrettyPrint = S
-
---- @type LibPrettyPrint
-local o = S
+local o = LibStub:NewLibrary(MAJOR, MINOR); if not o then return end
+LibPrettyPrint = o
 
 --[[-----------------------------------------------------------------------------
 Methods
