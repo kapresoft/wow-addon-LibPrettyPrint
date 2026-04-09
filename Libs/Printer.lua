@@ -42,7 +42,6 @@ S.__type = 'LibPrettyPrint_Printer'
 --- @param self LibPrettyPrint_Printer
 S.__call = function(self, ...) self.printFn(self.tag, ...) end
 
---- @type LibPrettyPrint_PrinterImpl
 local o = S
 
 --[[-------------------------------------------------------------------

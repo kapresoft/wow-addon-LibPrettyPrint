@@ -12,7 +12,6 @@ local parentNs
 --- @field settings LibPrettyPrint_Settings
 --- @field name string The addon Name
 --- @field O LibPrettyPrint_NamespaceObjects
---- @field O LibPrettyPrint_Formatter
 local ns = {}
 
 addon, parentNs = ...; parentNs.LibPrettyPrint = ns; ns.name = addon

@@ -19,6 +19,7 @@ local val = {
 }
 
 --- Formatter test
+--- /dump lpp_dev:test1Formatters()
 function o:test1Formatters()
   --- @type LibPrettyPrint_FormatterConfig
   local fc1 = { depth_limit = 1, }

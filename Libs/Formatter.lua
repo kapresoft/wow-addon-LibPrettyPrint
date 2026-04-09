@@ -26,7 +26,7 @@ S.pprint = ns.O.pprint
 --[[-------------------------------------------------------------------
 Support Functions
 ---------------------------------------------------------------------]]
-local o  = S;
+local o  = S
 
 --- @default
 --- Create a new formatter with default configuration.

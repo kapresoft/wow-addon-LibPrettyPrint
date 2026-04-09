@@ -48,10 +48,18 @@
     ]
   },
   "workspace": {
+    "ignoreDir": [
+      "**/.*",
+      "build",
+      "dist",
+      "doc",
+      "dev",
+      "legacy",
+      ".release"
+    ],
     "library": [
-      "/Users/tony/sandbox/github/kapresoft/wow/tools/vscode-wow-api/Annotations/Core",
-      "/Users/tony/sandbox/github/kapresoft/wow/wow-api-interface/Lib",
-      "~/.vscode/extensions/ketho.wow-api-0.22.3/Annotations/Core"
+      "/Users/tony/sandbox/github/kapresoft/wow/tools/vscode-wow-api-cppcxy/Annotations",
+      "/Users/tony/sandbox/github/kapresoft/wow/wow-api-interface/Lib"
     ]
   }
 }
