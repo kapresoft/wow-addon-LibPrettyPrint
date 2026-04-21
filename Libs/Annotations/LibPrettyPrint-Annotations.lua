@@ -18,6 +18,7 @@ p('hello:', { 1, 2, 3 })
 Type Defs
 -------------------------------------------------------------------------------]]
 --- @alias LibPrettyPrint_PrintFn fun(...: any) : void Printer function that accepts any values and outputs formatted text; behaves like print
+--- @alias LibPrettyPrint_PrintFnDelayed fun(...: any) : void Delayed printer function that accepts any values and outputs formatted text; behaves like print
 --- @alias LibPrettyPrint_PredicateFn fun() : boolean Function that evaluates a condition and returns true or false
 --- @alias RGBHex string The 6-char RGBHex color string, i.e. EFEFEF
 
