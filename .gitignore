@@ -49,5 +49,4 @@ ThirdParty/Libs
 # External Lib Dir (old)
 LibPrettyPrint/ThirdParty/Libs
 deployer-config.lua
-#.emmyrc.json
-.tmp-emmyrc.json
+.emmyrc.json
