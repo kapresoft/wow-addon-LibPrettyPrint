@@ -1,6 +1,8 @@
 package-as: LibPrettyPrint
 # --------------------------
-manual-changelog: false
+manual-changelog:
+  filename: dev/changelog-release.md
+  markup-type: markdown
 license-output: LICENSE.txt
 enable-nolib-creation: no
 
@@ -14,15 +16,18 @@ tools-used:
   - Bugsack
   - Bug-Grabber
 
-# Use github because svn repos are slower
+# Use GitHub because svn repos are slower
 # basepath is ${package-as}
 externals:
-  ThirdParty/Libs/LibStub: https://github.com/lua-wow/LibStub
+  ThirdParty/Libs/LibStub:
+    url: https://github.com/lua-wow/LibStub
+    tag: latest
 
 ignore:
   - "dev"
   - "*.md"
   - "*.yaml"
+  - "*.toml"
   - LICENSE
   - dev
   - doc
