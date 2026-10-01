@@ -8,7 +8,7 @@ Public Interface
 
 --- @type LibPrettyPrint_Formatter
 local fmt = LibPrettyPrint:Formatter()
-print('hello:', fmt({1, 2, 3}))
+print('hello:', fmt({ 1, 2, 3 }))
 
 --- @type LibPrettyPrint_Printer
 local p = LibPrettyPrint:Printer()
@@ -24,7 +24,7 @@ Type Defs
 
 --- @class LibPrettyPrint_PrinterInterface
 --- @field WithSubPrefix fun(self:LibPrettyPrint_Printer, sub_prefix:string) : LibPrettyPrint_Printer
---- @field New fun(self:LibPrettyPrint_Printer, config:LibPrettyPrint_PrinterConfig, predicateFn:LibPrettyPrint_PredicateFn|nil) : LibPrettyPrint_Printer 
+--- @field New fun(self:LibPrettyPrint_Printer, config:LibPrettyPrint_PrinterConfig, predicateFn:LibPrettyPrint_PredicateFn|nil) : LibPrettyPrint_Printer
 
 --- @class LibPrettyPrint_FormatterInterface
 --- @field Compact fun(self:LibPrettyPrint_Formatter) : LibPrettyPrint_Formatter

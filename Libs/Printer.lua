@@ -12,20 +12,22 @@ Types
 --[[-----------------------------------------------------------------------------
 Lua Vars
 -------------------------------------------------------------------------------]]
-local sformat, date, unpack, _print = string.format, date, unpack, print
+local sformat, date, _print = string.format, date, print
 local DevTools_Dump = DevTools_Dump
 --[[-----------------------------------------------------------------------------
 Local Vars
 -------------------------------------------------------------------------------]]
 --- @type LibPrettyPrint_PrinterConfig
 local DEFAULT_CONFIG = {
-  multiline_tables = false, show_all = true,
-  prefix_color     = '3AFFFD',
+  multiline_tables = false,
+  show_all = true,
+  prefix_color = '3AFFFD',
   sub_prefix_color = 'FFF57D',
-  show_timestamp   = true,
+  show_timestamp = true,
 }
 
-local TIMESTAMP_COLOR = 'BCBCBC'; local tsC = ns:colorFn(TIMESTAMP_COLOR)
+local TIMESTAMP_COLOR = 'BCBCBC'
+local tsC = ns:colorFn(TIMESTAMP_COLOR)
 local DEFAULT_TAG = '>>'
 
 --[[-----------------------------------------------------------------------------
@@ -36,7 +38,7 @@ Type: Printer
 --- @field formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
 --- @field printFn LibPrettyPrint_PrintFn
 --- @field predicateFn LibPrettyPrint_PredicateFn
-local S = {}; if not S then return end ; ns:register(ns.M.Printer, S)
+local S = {}; if not S then return end; ns:register(ns.M.Printer, S)
 S.__index = S
 S.__type = 'LibPrettyPrint_Printer'
 --- @param self LibPrettyPrint_Printer
@@ -51,10 +53,17 @@ Support Functions
 local function assertConfig(config)
   if config == nil then return end
 
-  assert(type(config) == 'table', "Invalid printer config. Expected type[LibPrettyPrint_PrinterConfig], but got: " .. type(config))
+  assert(
+    type(config) == 'table',
+    'Invalid printer config. Expected type[LibPrettyPrint_PrinterConfig], but got: ' .. type(config)
+  )
 
   if config.formatter then
-    assert(type(config.formatter) == 'table', "Invalid config.formatter instance or config. Expected type[LibPrettyPrint_Formatter or LibPrettyPrint_FormatterConfig], but got: " .. type(config.formatter))
+    assert(
+      type(config.formatter) == 'table',
+      'Invalid config.formatter instance or config. Expected type[LibPrettyPrint_Formatter or LibPrettyPrint_FormatterConfig], but got: '
+        .. type(config.formatter)
+    )
   end
 end
 
@@ -63,7 +72,10 @@ local function assertPredicate(predicateFn)
   if predicateFn == nil then return end
 
   local pt = type(predicateFn)
-  assert( pt == 'function', ('Expected predicateFn type to be a function, but got type=[%s] instead.'):format(pt))
+  assert(
+    pt == 'function',
+    ('Expected predicateFn type to be a function, but got type=[%s] instead.'):format(pt)
+  )
 end
 
 --- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
@@ -71,8 +83,14 @@ end
 local function evalPredicate(predicateFn)
   if predicateFn == nil then return true end
 
-  local rv = predicateFn(); local rvt = type(rv)
-  assert(rvt == 'boolean', ('Expected predicate function to return a boolean value, but got type=[%s] instead.'):format(rvt))
+  local rv = predicateFn()
+  local rvt = type(rv)
+  assert(
+    rvt == 'boolean',
+    ('Expected predicate function to return a boolean value, but got type=[%s] instead.'):format(
+      rvt
+    )
+  )
   return rv
 end
 
@@ -113,18 +131,20 @@ function o:__Init(config, predicateFn)
   end
 end
 
---- @private
---- @param config LibPrettyPrint_PrinterConfig|nil
---- @return LibPrettyPrint_PrinterConfig
+---@private
+---@param config LibPrettyPrint_PrinterConfig | nil
+---@return LibPrettyPrint_PrinterConfig
 function o:__InitConfig(config)
-  return ns:Table_MergeWithDefaults(DEFAULT_CONFIG, config or {})
+  return ns:Table_MergeWithDefaults(DEFAULT_CONFIG, config or {}) --[[@as LibPrettyPrint_PrinterConfig ]]
 end
 
 --- @param sub_prefix string The new subPrefix name
---- @return LibPrettyPrint_PrintFn
+--- @return LibPrettyPrint_Printer
 function o:WithSubPrefix(sub_prefix)
-  assert(type(sub_prefix) == 'string' and #ns:str_trim(sub_prefix) > 0,
-         'Invalid sub_prefix; expected string, but got): ' .. tostring(sub_prefix))
+  assert(
+    type(sub_prefix) == 'string' and #ns:str_trim(sub_prefix) > 0,
+    'Invalid sub_prefix; expected string, but got): ' .. tostring(sub_prefix)
+  )
 
   local newConfig = ns:Table_MergeWithDefaults(self.config, { sub_prefix = sub_prefix })
   newConfig.sub_prefix = sub_prefix
@@ -141,14 +161,13 @@ function o:NewPrintFn(predicateFn)
   --- @type LibPrettyPrint_PrintFn
   local fn = function(...)
     if not evalPredicate(predicateFn) then return end
+    local formatter = self.config.formatter --[[@as LibPrettyPrint_Formatter]]
     local args = ns:SafePack(...)
     for i = 1, args.n do
-      if type(args[i]) == "table" then
-        args[i] = self.config.formatter(args[i])
-      end
+      if type(args[i]) == 'table' then args[i] = formatter(args[i]) end
     end
     if self.config.show_timestamp then
-      local ts = tsC("[" .. date("%H:%M:%S") .. "]")
+      local ts = tsC('[' .. date('%H:%M:%S') .. ']')
       return _print(ts, ns:SafeUnpack(args))
     end
     return _print(ns:SafeUnpack(args))
@@ -160,7 +179,7 @@ end
 --- @return LibPrettyPrint_PrintFn Printer function that accepts any values and outputs formatted text; behaves like print
 function o:NewDumpPrintFn(predicateFn)
   self.tag = self:CreateTag()
-  
+
   local _p = DevTools_Dump
   return function(...)
     if not evalPredicate(predicateFn) then return end
@@ -180,7 +199,7 @@ function o:CreateTag()
     local p_color = ns:colorFn(self.config.prefix_color)
     return p_color(DEFAULT_TAG)
   end
-  return sformat("{{%s}}", prefix)
+  return sformat('{{%s}}', prefix)
 end
 
 --- Generates the combined prefix/sub_prefix resulting in one of:
