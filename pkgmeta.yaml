@@ -33,5 +33,6 @@ ignore:
   - doc
   - scripts
   - Interface
-  - ThirdParty-Libs/LibStub/tests
+  - ThirdParty/Libs/LibStub/tests
+  - Libs/Developer
 
