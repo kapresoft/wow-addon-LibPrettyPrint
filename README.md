@@ -237,7 +237,7 @@ All derived printers inherit the predicate automatically.
 
 ### Donations
 
-If LibPrettyPrint has made your addon development easier, consider supporting its development:
+If LibPrettyPrint has made your gameplay or addon development easier, consider supporting its development:
 
 - **[Paypal&trade; Donation](https://www.paypal.com/donate/?hosted_button_id=AX58YP3GSGXVU)**
 - **[Bitcoin Donation](https://www.blockchain.com/btc/address/3QQVAwJGkKHMM2oq6CLVWYgfx83TFVwp39)**
