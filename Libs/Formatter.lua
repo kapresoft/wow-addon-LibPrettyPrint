@@ -6,7 +6,9 @@ Local Vars
 ---------------------------------------------------------------------]]
 --- @type LibPrettyPrint_FormatterConfig
 local DEFAULT_CONFIG = {
-    multiline_tables = false, show_all = true, depth_limit = 1,
+  multiline_tables = false,
+  show_all = true,
+  depth_limit = 1,
 }
 --[[-------------------------------------------------------------------
 Library: Formatter
@@ -16,7 +18,7 @@ Library: Formatter
 --- @field private pprint LibPrettyPrint_pprint
 local S = {}; ns:register(ns.M.Formatter, S)
 S.__index = S
-S.__type  = 'LibPrettyPrint_Formatter'
+S.__type = 'LibPrettyPrint_Formatter'
 --- @param self LibPrettyPrint_Formatter
 S.__call = function(self, ...) return self:format(...) end
 
@@ -26,7 +28,7 @@ S.pprint = ns.O.pprint
 --[[-------------------------------------------------------------------
 Support Functions
 ---------------------------------------------------------------------]]
-local o  = S
+local o = S
 
 --- @default
 --- Create a new formatter with default configuration.
@@ -59,24 +61,23 @@ local o  = S
 --- @param config LibPrettyPrint_FormatterConfig|nil @Optional per-instance config; merged with defaults at construction time.
 --- @return LibPrettyPrint_Formatter
 function o:New(config)
-    --- @type LibPrettyPrint_Formatter
-    local f = setmetatable({}, o); f:__Init(config)
-    return f
+  --- @type LibPrettyPrint_Formatter
+  local f = setmetatable({}, o)
+  f:__Init(config)
+  return f
 end
 
 --- @private
 --- @param config LibPrettyPrint_FormatterConfig|nil
-function o:__Init(config)
-    self.config = ns:Table_MergeWithDefaults(DEFAULT_CONFIG, config or {})
-end
+function o:__Init(config) self.config = ns:Table_MergeWithDefaults(DEFAULT_CONFIG, config or {}) end
 
 --- @protected
 --- @param configAdditive LibPrettyPrint_FormatterConfig
 --- @return LibPrettyPrint_Formatter
 function o:Derive(configAdditive)
-    assert(configAdditive, "The additive config is required.")
-    local config = ns:Table_MergeWithDefaults(self.config, configAdditive or {})
-    return self:New(config)
+  assert(type(configAdditive) == 'table', 'The additive config is required.')
+  local config = ns:Table_MergeWithDefaults(self.config, configAdditive or {})
+  return self:New(config)
 end
 
 --- Create a new formatter with compact option option
@@ -108,11 +109,11 @@ function o:MultiLine() return self:Derive({ multiline_tables = true }) end
 --- @param ... any
 --- @return any
 function o:format(...)
-    local out = {}
-    for i = 1, select("#", ...) do
-        out[i] = self:pformat(select(i, ...))
-    end
-    return unpack(out)
+  local out = {}
+  for i = 1, select('#', ...) do
+    out[i] = self:pformat(select(i, ...))
+  end
+  return unpack(out)
 end
 
 --- Format {obj}
@@ -122,9 +123,8 @@ function o:pformat(obj) return self.pprint.pformat(obj, self.config) end
 
 function o.dump(msg) DevTools_DumpCommand(msg) end
 function o.dumpv(any)
-    local tmp = {}
-    print('Dump Value:')
-    table.insert(tmp, any)
-    DevTools_Dump(tmp)
+  local tmp = {}
+  print('Dump Value:')
+  table.insert(tmp, any)
+  DevTools_Dump(tmp)
 end
-
