@@ -11,7 +11,7 @@ Adapted and extended for World of Warcraft.
 
 ## Interface Definition File
 > Defines the public API and type annotations.
-- [Interface.lua](LibPrettyPrint/Libs/Developer/Interface.lua)
+- [LibPrettyPrint-Annotations.lua](Libs/Annotations/LibPrettyPrint-Annotations.lua)
 
 ## Usage Examples
 
@@ -68,7 +68,7 @@ print('Values:', multi(val))
 
 #### Notes
 
-* `:Compact()` and `:MultiLine()` return **new formatter instances** -- see also [Interface.lua](LibPrettyPrint/Libs/Developer/Interface.lua)
+* `:Compact()` and `:MultiLine()` return **new formatter instances** -- see also [LibPrettyPrint-Annotations.lua](Libs/Annotations/LibPrettyPrint-Annotations.lua)
 * The original formatter remains unchanged
 * Useful for creating formatting variants (compact vs verbose)
 * Derived formatters can be safely reused or shared
