@@ -4,7 +4,7 @@ local ns = select(2, ...).LibPrettyPrint; if not ns then return end
 --[[-----------------------------------------------------------------------------
 LibPrettyPrint
 -------------------------------------------------------------------------------]]
-local MAJOR, MINOR = 'LibPrettyPrint-1.0' , 5
+local MAJOR, MINOR = 'LibPrettyPrint-1.0', 5
 
 --- @class LibPrettyPrint-1.0
 local o = LibStub:NewLibrary(MAJOR, MINOR); if not o then return end
