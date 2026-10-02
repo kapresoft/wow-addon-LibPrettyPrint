@@ -1,5 +1,8 @@
-# LibPrettyPrint
-> Because staring at raw Lua tables shouldn’t hurt in World of Warcraft.
+[![Release Build](https://github.com/kapresoft/wow-addon-LibPrettyPrint/actions/workflows/release-build.yml/badge.svg)](https://github.com/kapresoft/wow-addon-LibPrettyPrint/actions/workflows/release-build.yml)
+
+# LibPrettyPrint :: Because staring at raw Lua tables shouldn’t hurt in World of Warcraft. 
+
+![download-count](https://cf.way2muchnoise.eu/full_1424095_downloads.svg?badge_style=for_the_badge) ![supported-wow-versions](https://cf.way2muchnoise.eu/versions/World%20of%20Warcraft%20Versions_1424095_all.svg?badge_style=for_the_badge)
 
 ### Who is this for?
 >Intended for addon developers who want safer, more readable debug output during development.
