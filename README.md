@@ -1,4 +1,4 @@
-[![Release Build](https://github.com/kapresoft/wow-addon-LibPrettyPrint/actions/workflows/release-build.yml/badge.svg)](https://github.com/kapresoft/wow-addon-LibPrettyPrint/actions/workflows/release-build.yml)
+[![Release Build](https://github.com/kapresoft/wow-addon-LibPrettyPrint/actions/workflows/release-build.yml/badge.svg?event=push)](https://github.com/kapresoft/wow-addon-LibPrettyPrint/actions/workflows/release-build.yml)
 
 # LibPrettyPrint :: Because staring at raw Lua tables shouldn’t hurt in World of Warcraft. 
 
