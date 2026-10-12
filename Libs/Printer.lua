@@ -26,6 +26,8 @@ local DEFAULT_CONFIG = {
   show_timestamp = true,
 }
 
+local COLOR_KEYS = { 'table_key_color', 'table_ref_color', 'table_cutoff_color' }
+
 local TIMESTAMP_COLOR = 'BCBCBC'
 local tsC = ns:colorFn(TIMESTAMP_COLOR)
 local DEFAULT_TAG = '>>'
@@ -34,8 +36,8 @@ local DEFAULT_TAG = '>>'
 Type: Printer
 -------------------------------------------------------------------------------]]
 --- @class LibPrettyPrint_PrinterImpl : LibPrettyPrint_PrinterInterface
---- @field config LibPrettyPrint_PrinterConfig|nil @Optional printer config
---- @field formatter LibPrettyPrint_Formatter|nil @Optional formatter instance
+--- @field config? LibPrettyPrint_PrinterConfig
+--- @field formatter? LibPrettyPrint_Formatter
 --- @field printFn LibPrettyPrint_PrintFn
 --- @field predicateFn LibPrettyPrint_PredicateFn
 local S = {}; if not S then return end; ns:register(ns.M.Printer, S)
@@ -49,7 +51,7 @@ local o = S
 --[[-------------------------------------------------------------------
 Support Functions
 ---------------------------------------------------------------------]]
---- @param config LibPrettyPrint_PrinterConfig|nil @Optional printer config
+--- @param config? LibPrettyPrint_PrinterConfig
 local function assertConfig(config)
   if config == nil then return end
 
@@ -67,7 +69,7 @@ local function assertConfig(config)
   end
 end
 
---- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
+--- @param predicateFn? LibPrettyPrint_PredicateFn
 local function assertPredicate(predicateFn)
   if predicateFn == nil then return end
 
@@ -78,7 +80,7 @@ local function assertPredicate(predicateFn)
   )
 end
 
---- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
+--- @param predicateFn? LibPrettyPrint_PredicateFn
 --- @return boolean
 local function evalPredicate(predicateFn)
   if predicateFn == nil then return true end
@@ -94,11 +96,62 @@ local function evalPredicate(predicateFn)
   return rv
 end
 
+--- @param out LibPrettyPrint_PackedArgs
+--- @param ... any
+local function append(out, ...)
+  for i = 1, select('#', ...) do
+    out.n = out.n + 1
+    out[out.n] = (select(i, ...))
+  end
+end
+
+--- Formats table args; keeps every value a formatter returns
+--- @param formatter LibPrettyPrint_Formatter
+--- @param ... any
+--- @return LibPrettyPrint_PackedArgs
+local function formatArgs(formatter, ...)
+  local args = ns:SafePack(...)
+  local out = ns:SafePack()
+  for i = 1, args.n do
+    if type(args[i]) == 'table' then
+      append(out, formatter(args[i]))
+    else
+      append(out, args[i])
+    end
+  end
+  return out
+end
+
+--- @param config LibPrettyPrint_PrinterConfig
+--- @return LibPrettyPrint_FormatterConfig? @nil if no color is set
+local function colorConfig(config)
+  local colors
+  for _, k in ipairs(COLOR_KEYS) do
+    if config[k] then
+      colors = colors or {}
+      colors[k] = config[k]
+    end
+  end
+  return colors
+end
+
+--- From config.formatter (a config or an instance), plus the
+--- top-level colors, which override the formatter's own.
+--- @param config LibPrettyPrint_PrinterConfig
+--- @return LibPrettyPrint_Formatter
+local function resolveFormatter(config)
+  local formatter = config.formatter
+  if not ns:IsType(formatter, ns.O.Formatter) then formatter = ns.O.Formatter:New(formatter) end
+  local colors = colorConfig(config)
+  if not colors then return formatter --[[@as LibPrettyPrint_Formatter ]] end
+  return formatter:Derive(colors)
+end
+
 --[[-----------------------------------------------------------------------------
 Methods:Printer
 -------------------------------------------------------------------------------]]
---- @param config LibPrettyPrint_PrinterConfig|nil @Optional printer config
---- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
+--- @param config? LibPrettyPrint_PrinterConfig
+--- @param predicateFn? LibPrettyPrint_PredicateFn
 --- @return LibPrettyPrint_Printer
 function o:New(config, predicateFn)
   assertConfig(config)
@@ -112,16 +165,13 @@ function o:New(config, predicateFn)
 end
 
 --- @private
---- @param config LibPrettyPrint_PrinterConfig|nil @Optional printer config
---- @param predicateFn LibPrettyPrint_PredicateFn|nil @Optional
+--- @param config? LibPrettyPrint_PrinterConfig
+--- @param predicateFn? LibPrettyPrint_PredicateFn
 function o:__Init(config, predicateFn)
   self.config = self:__InitConfig(config)
   self.predicateFn = predicateFn
 
-  -- formatter can be a config or an instance of Formatter
-  if not ns:IsType(self.config.formatter, ns.O.Formatter) then
-    self.config.formatter = ns.O.Formatter:New(self.config.formatter)
-  end
+  self.config.formatter = resolveFormatter(self.config)
 
   if not self.config.use_dump_tool then
     self.printFn = self:NewPrintFn(predicateFn)
@@ -131,11 +181,15 @@ function o:__Init(config, predicateFn)
   end
 end
 
----@private
----@param config LibPrettyPrint_PrinterConfig | nil
----@return LibPrettyPrint_PrinterConfig
+--- @private
+--- @param config? LibPrettyPrint_PrinterConfig
+--- @return LibPrettyPrint_PrinterConfig
 function o:__InitConfig(config)
-  return ns:Table_MergeWithDefaults(DEFAULT_CONFIG, config or {}) --[[@as LibPrettyPrint_PrinterConfig ]]
+  local merged = ns:Table_MergeWithDefaults(DEFAULT_CONFIG, config or {}) --[[@as LibPrettyPrint_PrinterConfig ]]
+  local formatter = config and config.formatter
+  -- The merge deep-copies tables, dropping the metatable
+  if ns:IsType(formatter, ns.O.Formatter) then merged.formatter = formatter end
+  return merged
 end
 
 --- @param sub_prefix string The new subPrefix name
@@ -148,6 +202,7 @@ function o:WithSubPrefix(sub_prefix)
 
   local newConfig = ns:Table_MergeWithDefaults(self.config, { sub_prefix = sub_prefix })
   newConfig.sub_prefix = sub_prefix
+  newConfig.formatter = self.config.formatter
 
   return o:New(newConfig, self.predicateFn)
 end
@@ -162,10 +217,7 @@ function o:NewPrintFn(predicateFn)
   local fn = function(...)
     if not evalPredicate(predicateFn) then return end
     local formatter = self.config.formatter --[[@as LibPrettyPrint_Formatter]]
-    local args = ns:SafePack(...)
-    for i = 1, args.n do
-      if type(args[i]) == 'table' then args[i] = formatter(args[i]) end
-    end
+    local args = formatArgs(formatter, ...)
     if self.config.show_timestamp then
       local ts = tsC('[' .. date('%H:%M:%S') .. ']')
       return _print(ts, ns:SafeUnpack(args))
@@ -211,7 +263,7 @@ end
 --- with no prefix, no suffix: nil
 --- ```
 --- @private
---- @return string|nil The combined prefix separated with '::', example: 'MyAddOn::Module'
+--- @return string? @Joined by '::', e.g. 'MyAddOn::Module'; nil without a prefix
 function o:CreateCombinedPrefix()
   local c = self.config
 

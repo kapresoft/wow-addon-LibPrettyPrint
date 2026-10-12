@@ -76,6 +76,49 @@ print('Values:', multi(val))
 * Useful for creating formatting variants (compact vs verbose)
 * Derived formatters can be safely reused or shared
 
+#### Key/value formatter
+
+`:KeyValues()` returns a formatter that expands each table argument into one sorted `key=value` string per entry, returned as separate values. This suits outputs that show each argument on its own row, such as Blizzard's Event Trace (`/etrace`).
+
+```lua
+local kv = LibPrettyPrint:Formatter():KeyValues()
+
+print(kv({ name = 'Tony', level = 80, active = false, [1] = 'a' }))
+-- 1='a'  active=false  level=80  name='Tony'
+```
+
+By default each value is colored by type with Event Trace's colors (strings green, numbers orange, booleans blue, tables light yellow) and string values are single-quoted. Set `key_values_type_colors = false` for plain text, e.g. output where color codes don't render:
+
+```lua
+local plain = LibPrettyPrint:Formatter({ key_values_type_colors = false }):KeyValues()
+print(plain({ name = 'Tony', level = 80 }))
+-- level=80  name=Tony
+```
+
+Pass an optional color to color each key, either a Blizzard color or a 6-char hex string:
+
+```lua
+local kvWhite = LibPrettyPrint:Formatter():KeyValues(WHITE_FONT_COLOR)
+local kvHex   = LibPrettyPrint:Formatter():KeyValues('EFEFEF')
+```
+
+The formatter's color options also apply. `table_ref_color` and `table_cutoff_color` override the type colors for function values and nested tables.
+
+```lua
+local kv = LibPrettyPrint:Formatter({
+  table_key_color    = 'FFD100', -- keys (same as the KeyValues() color)
+  table_ref_color    = 'AAAAAA', -- function values
+  table_cutoff_color = 'FF8080', -- nested tables (not expanded)
+}):KeyValues()
+```
+
+* One level deep; nested tables show as `<table>` and functions as `<function>`, like `DevTools_Dump`
+* Other values show via `tostring()`
+* Number keys first (numerically), then string keys (alphabetically)
+* An empty table returns `{}`
+* Non-table arguments pass through unchanged; several tables flatten in order
+* Lua only expands a call's results when it's the **last** argument: in `print(kv(a), 'x')` only the first entry of `a` shows
+
 ### Printer
 
 > A printer formats values and sends them directly to output (e.g. chat frame).
@@ -142,6 +185,18 @@ local printerConfig = {
 
 local p = LibPrettyPrint:Printer(printerConfig)
 p('Values:', { foo = { bar = { baz = 123 } } })
+```
+
+#### Colors on the printer
+
+`table_key_color`, `table_ref_color` and `table_cutoff_color` may also be set on the printer itself. They apply to its formatter, whether a config or an instance, and override the formatter's own colors.
+
+```lua
+local p = LibPrettyPrint:Printer({
+  prefix          = 'MyAddOn',
+  table_key_color = '7C750C',
+  formatter       = LibPrettyPrint:Formatter():KeyValues(),
+})
 ```
 
 ## Deriving a Printer (Sub-Prefixes)
