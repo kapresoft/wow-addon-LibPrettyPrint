@@ -8,10 +8,11 @@
 	<!--@do-not-package@-->
 	<Include file='Libs\Developer\_DeveloperSetup.xml'/>
 	<!--@end-do-not-package@-->
+	<Script file="Libs\LibPrettyPrint.lua"/>
 	<Script file="Libs\pprint.lua"/>
+	<Script file="Libs\ValueFormatter.lua"/>
 	<Script file="Libs\Formatter.lua"/>
 	<Script file="Libs\Printer.lua"/>
-	<Script file="Libs\LibPrettyPrint.lua"/>
 	<!--@do-not-package@-->
 	<Include file='Libs\Developer\_Developer.xml'/>
 	<!--@end-do-not-package@-->

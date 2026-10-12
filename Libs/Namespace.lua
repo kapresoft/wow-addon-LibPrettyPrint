@@ -1,5 +1,4 @@
--- if LibPrettyPrint exists, it's already been loaded
-if type(LibPrettyPrint) == 'table' then return end
+tr = tr or function(...) end
 
 --- @type string
 local addon
@@ -23,16 +22,18 @@ local modules = {
   pprint = '',
   Printer = '',
   Formatter = '',
+  ValueFormatter = '',
 }
 for moduleName in pairs(modules) do
   modules[moduleName] = moduleName
 end
 
 --- @class LibPrettyPrint_NamespaceObjects
---- @field LibPrettyPrint LibPrettyPrint-1.0
+--- @field LibPrettyPrint LibPrettyPrintImpl-1.0
 --- @field pprint LibPrettyPrint_pprint
 --- @field Printer LibPrettyPrint_PrinterImpl
 --- @field Formatter LibPrettyPrint_Formatter
+--- @field ValueFormatter LibPrettyPrint_ValueFormatter
 local O = {}
 
 ns.M = modules
@@ -55,7 +56,7 @@ function ns:register(name, obj)
   return obj
 end
 
---- @param rgbHex RGBHex|nil    @Optional
+--- @param rgbHex? LibPrettyPrint_RGBHex
 --- @return fun(key:string) : string The color formatted key
 function ns:colorFn(rgbHex)
   return function(text)
@@ -66,7 +67,7 @@ function ns:colorFn(rgbHex)
 end
 
 --- @param s string
---- @return string|nil
+--- @return string? @nil if s is nil
 function ns:str_trim(s) return type(s) == 'string' and s:match('^%s*(.-)%s*$') or s end
 
 --- @class LibPrettyPrint_PackedArgs
@@ -110,8 +111,8 @@ end
 --- ```
 --- local mergedConfig = Table_MergeWithDefaults(DEFAULT, userConfig)
 --- ```
---- @param left table|nil The default values
---- @param right table  The override values; overrides values of {left} if non-nil
+--- @param left? table @The default values
+--- @param right table @The override values; overrides values of {left} if non-nil
 --- @return table?
 function ns:Table_MergeWithDefaults(left, right)
   assert(type(right) == 'table', 'The param [right] must be a table.')
@@ -136,4 +137,3 @@ end
 --- @return boolean
 function ns:IsType(value, class) return type(value) == 'table' and getmetatable(value) == class end
 
-LibPrettyPrint_Namespace = ns
