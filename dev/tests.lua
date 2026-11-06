@@ -1,3 +1,11 @@
+--[[-----------------------------------------------------------------------------
+Local Functions for manual testing in LuaDevKit
+-------------------------------------------------------------------------------]]
+local function printVersion()
+  local lib, minor = LibStub('LibPrettyPrint-1.0')
+  print('lib=', fm(lib), 'minor=', minor)
+end
+
 local x = {
   --- One liners (Formatter)
   function()
