@@ -9,7 +9,7 @@ Loads before the modules and gates them: an older or equal copy
 clears its namespace, so its remaining files skip. Methods must
 only use ns.O.* when called, never at load time.
 -------------------------------------------------------------------------------]]
-local MAJOR, MINOR = 'LibPrettyPrint-1.0', 6
+local MAJOR, MINOR = 'LibPrettyPrint-1.0', 7
 
 --- @class LibPrettyPrintImpl-1.0 : LibPrettyPrint-1.0
 local o = LibStub:NewLibrary(MAJOR, MINOR)
