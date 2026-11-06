@@ -58,6 +58,8 @@ Methods
 --- @param colors LibPrettyPrint_KeyValueColors
 --- @return string
 function o:Format(val, colors)
+  local secret = ns:SecretText(val)
+  if secret then return secret end
   local formatter = formatters[type(val)] or plainValue
   return formatter(val, colors)
 end

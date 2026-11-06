@@ -66,6 +66,17 @@ function ns:colorFn(rgbHex)
   end
 end
 
+--- Placeholder for a value addon code can't format or walk
+--- @param v any
+--- @return string? @nil if v isn't secret
+function ns:SecretText(v)
+  if not (issecretvalue and canaccessvalue and canaccesstable) then return end
+  if issecretvalue(v) or not canaccessvalue(v)
+      or (type(v) == 'table' and not canaccesstable(v)) then
+    return ('<secret %s>'):format(type(v))
+  end
+end
+
 --- @param s string
 --- @return string? @nil if s is nil
 function ns:str_trim(s) return type(s) == 'string' and s:match('^%s*(.-)%s*$') or s end

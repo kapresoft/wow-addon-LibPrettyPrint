@@ -48,6 +48,54 @@ S.pprint = ns.O.pprint
 --[[-------------------------------------------------------------------
 Support Functions
 ---------------------------------------------------------------------]]
+--- @param v any
+--- @param seen table<table, boolean>
+--- @return boolean
+local function hasSecret(v, seen)
+  if ns:SecretText(v) then return true end
+  if type(v) ~= 'table' or seen[v] then return false end
+  seen[v] = true
+  for k, val in pairs(v) do
+    if hasSecret(k, seen) or hasSecret(val, seen) then return true end
+  end
+  return false
+end
+
+local scrubTable
+
+--- @param v any
+--- @param copies table<table, table> @Original to copy, keeps cycles
+--- @return any
+local function scrubValue(v, copies)
+  local secret = ns:SecretText(v)
+  if secret then return secret end
+  if type(v) ~= 'table' then return v end
+  return copies[v] or scrubTable(v, copies)
+end
+
+--- @param tbl table
+--- @param copies table<table, table>
+--- @return table
+function scrubTable(tbl, copies)
+  local copy = {}
+  copies[tbl] = copy
+  for k, v in pairs(tbl) do
+    copy[scrubValue(k, copies)] = scrubValue(v, copies)
+  end
+  local mt = getmetatable(tbl)
+  -- after filling, so __newindex can't redirect writes
+  if type(mt) == 'table' then setmetatable(copy, mt) end
+  return copy
+end
+
+--- pprint walks tables and compares values, which errors on secrets
+--- @param obj any
+--- @return any @obj itself when it holds no secrets
+local function scrubSecrets(obj)
+  if not hasSecret(obj, {}) then return obj end
+  return scrubValue(obj, {})
+end
+
 --- @param k any
 --- @return number
 local function keyRank(k) return KEY_RANK[type(k)] or OTHER_KEY_RANK end
@@ -114,6 +162,8 @@ end
 --- @param tbl table
 --- @param colors LibPrettyPrint_KeyValueColors
 local function pushKeyValues(out, tbl, colors)
+  local secret = ns:SecretText(tbl)
+  if secret then return push(out, secret) end
   local keys = sortedKeys(tbl)
   if #keys == 0 then return push(out, EMPTY_TABLE) end
   for _, k in ipairs(keys) do
@@ -277,7 +327,11 @@ end
 --- Format {obj}
 --- @private
 --- @return string
-function o:pformat(obj) return self.pprint.pformat(obj, self.config) end
+function o:pformat(obj)
+  local secret = ns:SecretText(obj)
+  if secret then return secret end
+  return self.pprint.pformat(scrubSecrets(obj), self.config)
+end
 
 function o.dump(msg) DevTools_DumpCommand(msg) end
 function o.dumpv(any)
